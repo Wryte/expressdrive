@@ -1,0 +1,26 @@
+{
+  "name": "expressdrive",
+  "version": "1.0.0",
+  "description": "A cloud drive plugin for express",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wryte/expressdrive.git"
+  },
+  "keywords": [
+    "express"
+  ],
+  "author": "Craig Dykstra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Wryte/expressdrive/issues"
+  },
+  "homepage": "https://github.com/Wryte/expressdrive"
+}
