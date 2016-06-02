@@ -1,7 +1,7 @@
 var defaultConfig = require("./default.config")
 var config = {}
 try {
-	config = require("./../expressdrive.config")
+	config = require("./../../expressdrive.config")
 } catch (ex) {
     console.warn("expressdrive - no user config")
 }
@@ -12,4 +12,8 @@ for (var k in defaultConfig) {
 	}
 }
 
-console.log("config", config)
+function ExpressDrive(app) {
+	console.log("got the app")
+}
+
+module.exports = ExpressDrive
