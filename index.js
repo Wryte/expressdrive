@@ -5,13 +5,14 @@ var fs = require("fs")
 var Handlebars = require("handlebars")
 var passport = require("passport")
 var LocalStrategy = require("passport-local").Strategy
+var appRoot = require("app-root-path")
 
 // load up config
 var defaultConfig = require("./default.config")
 var config = {}
-console.log("test 1", __dirname)
+
 try {
-	config = require(__dirname + "/expressdrive.config")
+	config = require(appRoot + "/expressdrive.config")
 } catch (ex) {
     console.warn("expressdrive - no user config")
 }
@@ -49,10 +50,10 @@ passport.deserializeUser((id, done) => {
 
 // set up templates
 var templates = {}
-fs.readdir("./views", (err, files) => {
+fs.readdir(__dirname + "/views", (err, files) => {
 	files.forEach((file, i) => {
 		var templateName = file.split(".")[0]
-		fs.readFile("./views/"+file, "utf8", (err, data) => {
+		fs.readFile(__dirname + "/views/"+file, "utf8", (err, data) => {
 			templates[templateName] = Handlebars.compile(data)
 			Handlebars.registerPartial(templateName, data)
 		})
@@ -72,7 +73,7 @@ class ExpressDrive {
 	}
 
 	init() {
-		this.app.use("/expressdrive", express.static("./public"));
+		this.app.use("/expressdrive", express.static(__dirname + "/public"));
 		this.app.use(passport.initialize());
 		this.app.use(passport.session());
 

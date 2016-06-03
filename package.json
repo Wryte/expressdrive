@@ -4,6 +4,7 @@
   "description": "A cloud drive plugin for express",
   "main": "index.js",
   "dependencies": {
+    "app-root-path": "^1.0.0",
     "handlebars": "^4.0.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0"
