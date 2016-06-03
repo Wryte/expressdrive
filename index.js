@@ -9,6 +9,7 @@ var LocalStrategy = require("passport-local").Strategy
 // load up config
 var defaultConfig = require("./default.config")
 var config = {}
+console.log("test 1", __dirname)
 try {
 	config = require(__dirname + "/expressdrive.config")
 } catch (ex) {
