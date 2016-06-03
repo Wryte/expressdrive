@@ -1,7 +1,7 @@
 var express = require("express");
-var expressDrive = require("./index");
+var ExpressDrive = require("./index");
 var app = express();
-expressDrive(app);
+var expressDrive = new ExpressDrive(app);
 
 app.get("/", function (req, res) {
 	res.send("Hello World!");
