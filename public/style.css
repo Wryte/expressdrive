@@ -2,3 +2,184 @@
 	margin: 0;
 	padding: 0;
 }
+
+html {
+	color: #333;
+	font-family: Lato, Sans-Serif;
+}
+
+body {
+	background-color: #f8f8f8;
+}
+
+html, body {
+	height: 100%;
+}
+
+.text-center { text-align: center; }
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.login-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.login-page .head {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.login-container {
+	position: relative;
+	background-color: white;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+}
+
+.login-container img {
+	height: 75px;
+}
+
+.login-container label,
+.login-container input {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.login-container label {
+	color: #999;
+	font-size: 0.8em;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+	font-size: 1.1em;
+	padding: 5px;
+}
+
+.login-container button {
+	width: 100%;
+	padding: 10px;
+	background-color: hsl(38,29%,55%);
+	border: none;
+	border-radius: 3px;
+	color: white;
+	font-family: Lato, Sans-Serif;
+	font-weight: 300;
+	font-size: 1.1em;
+}
+
+.break {
+	border-bottom: 1px solid #ddd;
+	margin: 10px 0px;
+}
+
+.login-container:before,
+.login-container:after,
+.content:before,
+.content:after {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    left: 15px;
+    bottom: 10px;
+    width: 70%;
+    max-width: 300px;
+    max-height: 100px;
+    height: 55%;
+    -webkit-box-shadow: 0 8px 5px hsla(0, 0%, 0%, 0.3);
+    -moz-box-shadow: 0 8px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 5px hsla(0, 0%, 0%, 0.3);
+    -webkit-transform: skew(-15deg) rotate(-3deg);
+    -moz-transform: skew(-15deg) rotate(-3deg);
+    -ms-transform: skew(-15deg) rotate(-3deg);
+    -o-transform: skew(-15deg) rotate(-3deg);
+    transform: skew(-15deg) rotate(-3deg);
+}
+
+.login-container:after,
+.content:after {
+    left: auto;
+    right: 15px;
+    -webkit-transform: skew(15deg) rotate(3deg);
+    -moz-transform: skew(15deg) rotate(3deg);
+    -ms-transform: skew(15deg) rotate(3deg);
+    -o-transform: skew(15deg) rotate(3deg);
+    transform: skew(15deg) rotate(3deg);
+}
+
+.file-page {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.top-bar {
+	flex-shrink: 1;
+	height: 50px;
+	background-color: white;
+	border-bottom: 1px solid #ddd;
+}
+
+.main {
+	flex-grow: 1;
+}
+
+.inner {
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+.top-bar .inner {
+	display: flex;
+	justify-content: space-between;
+	height: 100%;
+}
+
+.top-bar .container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	height: 100%;
+}
+.top-bar .container .logo {
+	height: 35px;
+	margin-right: 10px;
+}
+
+.top-bar .sign-out {
+	color: hsl(38,29%,55%);
+	padding: 4px;
+	border-radius: 3px;
+}
+.top-bar .sign-out:hover {
+	background-color: #eee;
+}
+.top-bar .sign-out i {
+	margin-left: 5px;
+}
+
+.content {
+	position: relative;
+	background-color: white;
+	border: 1px solid #ddd;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+.breadcrumbs {
+	font-size: 0.8em;
+}
+.breadcrumbs a,
+.breadcrumbs i {
+	margin-right: 5px;
+}
+.breadcrumbs a {
+	color: hsl(38,29%,58%);
+}

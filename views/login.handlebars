@@ -1,1 +1,40 @@
-<h3>Login</h3>
+<div class="login-page">
+	<div class="login-container">
+		<div class="head">
+			<img src="http://thunderbayurc.com/images/logo.png">
+			<p>URC Thunder Bay</p>
+		</div>
+		<form id="loginForm" action="{{path}}/login" method="post">
+			<label for="username">username</label>
+			<input id="username" type="text" name="username">
+			<label for="password">password</label>
+			<input id="passwordRaw" type="password" name="passwordRaw">
+			<input id="password" type="hidden" name="password">
+		</form>
+		<div class="break"></div>
+		<button type="submit" form="loginForm">Log In</button>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var loginForm = document.getElementById("loginForm")
+	var username = document.getElementById("username")
+	var passwordRaw = document.getElementById("passwordRaw")
+	var password = document.getElementById("password")
+
+	loginForm.onsubmit = function(e) {
+		var message
+		var usernameValue = username.value
+		var passwordRawValue = passwordRaw.value
+
+		if (!usernameValue || usernameValue == "" || !passwordRawValue || passwordRawValue == "") {
+			message = "Please enter all fields"
+
+			e.preventDefault()
+			return false
+		}
+
+		passwordRaw.value = ""
+		password.value = Sha256.hash(usernameValue + passwordRawValue)
+	}
+</script>
