@@ -18,6 +18,8 @@
 				<p>\{{name}}</p>
 				<p class="sub">\{{size}}</p>
 			</div>
+			<div class="flex-grow"></div>
+			<i class="complete fa fa-check-circle"></i>
 		</div>
 		<div class="progress">
 			<div class="bar"></div>
@@ -30,32 +32,38 @@
 		var	uploadInput = document.getElementById("uploadInput")
 		var	uploadItemsContainer = document.getElementById("uploadItemsContainer")
 
-		var div = document.createElement("div")
-		div.innerHTML = __templates.uploadItemTemplate({ name: "test", size: "24MB"})
-		uploadItemsContainer.appendChild(div.firstChild)
-
 		function uploadFile(file) {
-			var formData = new FormData()
-			formData.append('file', file, file.name);
+			var item = getNode("uploadItem", { name: file.name, size: toMB(file.size) })
+			var bar = item.querySelector(".bar")
+			var progress = item.querySelector(".progress")
+			var check = item.querySelector(".complete")
 
-			var xhr = new XMLHttpRequest();
-			xhr.open('POST', __path + "/upload", true);
+			uploadItemsContainer.insertBefore(item, uploadItemsContainer.firstChild)
+			TweenMax.from(item, 0.2, { opacity: 0, height: 0 })
+
+			var formData = new FormData()
+			formData.append('file', file, file.name)
+
+			var xhr = new XMLHttpRequest()
+			xhr.open('POST', __path + "/upload", true)
 
 			xhr.upload.addEventListener("progress", function(e) {
 				if (e.lengthComputable) {
-					console.log(file.name, e.loaded / e.total)
+					TweenMax.to(bar, 0.2, { width: (e.loaded / e.total * 100) + "%" })
 				}
 			})
 
 			xhr.onload = function () {
 				if (xhr.status === 200) {
-					console.log("success")
+					var tl = new TimelineMax()
+					tl.to(progress, 0.2, { opacity: 0, delay: 0.5 })
+					tl.fromTo(check, 0.2, { opacity: 0, x: -20 }, { opacity: 1, x: 0 })
 				} else {
 					alert('An error occurred!')
 				}
-			};
+			}
 
-			xhr.send(formData)
+			setTimeout(function() { xhr.send(formData) }, 0.2)
 		}
 
 		uploadInput.onchange = function(e) {
@@ -63,5 +71,5 @@
 				uploadFile(uploadInput.files[i])
 			}
 		}
-	});
+	})
 </script>

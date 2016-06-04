@@ -17,6 +17,8 @@ html, body {
 }
 
 .text-center { text-align: center !important; }
+.flex-grow { flex-grow: 1; }
+
 a {
 	text-decoration: none;
 	color: inherit;
@@ -291,24 +293,24 @@ button.primary, label.button.primary {
 	display: none;
 	width: 500px;
 	background-color: white;
-	border: 1px solid #ddd;
-	border-radius: 2px;
+	border: 1px solid #bbb;
+	border-radius: 3px;
 }
 
 .popup .header {
-	padding: 10px;
+	padding: 20px;
 	border-bottom: 1px solid #ddd;
 }
 
 .popup .body {
 	min-height: 200px;
-	background-color: #f8f8f8;
+	background-color: #ddd;
 	overflow-y: auto;
 }
 
 .popup .footer {
-	background-color: #ddd;
-	border-top: 1px solid #ccc;
+	background-color: #ccc;
+	border-top: 1px solid #bbb;
 	padding: 10px;
 	text-align: right;
 }
@@ -323,8 +325,13 @@ button.primary, label.button.primary {
 	font-size: 0.8em;
 }
 
+#uploadPopup .body {
+	height: 250px;
+}
+
 .upload-item {
-	border-bottom: 1px solid #ddd;
+	background-color: #f8f8f8;
+	border-bottom: 1px solid #d8d8d8;
 }
 
 .upload-item .main {
@@ -345,6 +352,10 @@ button.primary, label.button.primary {
 	color: #999;
 }
 
+.upload-item .complete {
+	opacity: 0;
+}
+
 .upload-item .progress {
 	height: 4px;
 	background-color: #eee;
@@ -352,5 +363,6 @@ button.primary, label.button.primary {
 
 .upload-item .progress .bar {
 	height: 100%;
+	width: 0%;
 	background-color: hsl(38,29%,58%);
 }
