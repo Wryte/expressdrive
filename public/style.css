@@ -16,7 +16,7 @@ html, body {
 	height: 100%;
 }
 
-.text-center { text-align: center; }
+.text-center { text-align: center !important; }
 a {
 	text-decoration: none;
 	color: inherit;
@@ -173,6 +173,13 @@ a {
 	margin: 20px 0;
 }
 
+.toolbar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
 .breadcrumbs {
 	font-size: 0.8em;
 }
@@ -182,4 +189,61 @@ a {
 }
 .breadcrumbs a {
 	color: hsl(38,29%,58%);
+}
+
+.tool-container {
+	display: flex;
+	flex-direction: row;
+	font-size: 0.6em;
+}
+
+.tool-container > * {
+	margin-left: 10px;
+}
+
+.file-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 20px 0;
+}
+
+.file-table td,
+.file-table th {
+	text-align: left;
+	padding: 5px;
+}
+
+.file-table .indent {
+	padding: 5px 45px;
+}
+
+.file-table .shrink {
+	width: 1px;
+	white-space: nowrap;
+}
+
+.file-table thead tr {
+	font-size: 0.8em;
+	color: #999;
+	border-bottom: 1px solid #ddd;
+}
+.file-table tbody tr {
+	border-bottom: 1px solid #ddd;
+}
+
+.description-td {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.description-td > i {
+	margin-right: 10px;
+	font-size: 1.5em;
+	color: hsl(38,29%,58%);
+}
+
+.description-td .sub {
+	color: #999;
+	font-size: 0.8em;
 }
