@@ -1,9 +1,67 @@
 <div id="uploadPopup" class="popup">
 	<div class="header">Upload to 'Folder 1'</div>
-	<div class="body"></div>
+	<div id="uploadItemsContainer" class="body">
+	</div>
 	<div class="footer">
+		<input id="uploadInput" type="file" name="files" multiple>
 		<span class="sub">You may choose more than one file at a time</span>
-		<button class="primary">Select Files</button>
-		<button data-close-popup=true>Cancel</button>
+		<label class="button primary" for="uploadInput">Select Files</label>
+		<button data-close-popup=true>Done</button>
 	</div>
 </div>
+
+<script id="uploadItemTemplate" type="text/x-handlebars-template">
+	<div class="upload-item">
+		<div class="main">
+			<i class="fa fa-file-text-o"></i>
+			<div class="filename">
+				<p>\{{name}}</p>
+				<p class="sub">\{{size}}</p>
+			</div>
+		</div>
+		<div class="progress">
+			<div class="bar"></div>
+		</div>
+	</div>
+</script>
+
+<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function() {
+		var	uploadInput = document.getElementById("uploadInput")
+		var	uploadItemsContainer = document.getElementById("uploadItemsContainer")
+
+		var div = document.createElement("div")
+		div.innerHTML = __templates.uploadItemTemplate({ name: "test", size: "24MB"})
+		uploadItemsContainer.appendChild(div.firstChild)
+
+		function uploadFile(file) {
+			var formData = new FormData()
+			formData.append('file', file, file.name);
+
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', __path + "/upload", true);
+
+			xhr.upload.addEventListener("progress", function(e) {
+				if (e.lengthComputable) {
+					console.log(file.name, e.loaded / e.total)
+				}
+			})
+
+			xhr.onload = function () {
+				if (xhr.status === 200) {
+					console.log("success")
+				} else {
+					alert('An error occurred!')
+				}
+			};
+
+			xhr.send(formData)
+		}
+
+		uploadInput.onchange = function(e) {
+			for (var i = 0; i < uploadInput.files.length; i++) {
+				uploadFile(uploadInput.files[i])
+			}
+		}
+	});
+</script>

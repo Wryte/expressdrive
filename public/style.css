@@ -68,7 +68,7 @@ a {
 	font-size: 1.1em;
 }
 
-button {
+button, label.button {
 	cursor: pointer;
 	padding: 10px;
 	border: none;
@@ -79,7 +79,7 @@ button {
 	font-weight: 300;
 	font-size: 0.9em;
 }
-button.primary {
+button.primary, label.button.primary {
 	background-color: hsl(38,29%,55%);
 }
 
@@ -303,6 +303,7 @@ button.primary {
 .popup .body {
 	min-height: 200px;
 	background-color: #f8f8f8;
+	overflow-y: auto;
 }
 
 .popup .footer {
@@ -312,7 +313,44 @@ button.primary {
 	text-align: right;
 }
 
+.popup .footer input {
+	position: absolute;
+	visibility: hidden;
+}
+
 .popup .footer .sub {
 	color: #999;
 	font-size: 0.8em;
+}
+
+.upload-item {
+	border-bottom: 1px solid #ddd;
+}
+
+.upload-item .main {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 10px;
+}
+
+.upload-item .main > i {
+	color: hsl(38,29%,58%);
+	font-size: 1.3em;
+	margin-right: 10px;
+}
+
+.upload-item .sub {
+	font-size: 0.7em;
+	color: #999;
+}
+
+.upload-item .progress {
+	height: 4px;
+	background-color: #eee;
+}
+
+.upload-item .progress .bar {
+	height: 100%;
+	background-color: hsl(38,29%,58%);
 }

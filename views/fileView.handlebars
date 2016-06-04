@@ -92,16 +92,8 @@
 	var createFolderButton = document.getElementById("createFolderButton")
 	var createFolderPopup = document.getElementById("createFolderPopup")
 
-	var shadeTl = new TimelineMax()
-	shadeTl.from(shade, 0.2, { opacity: 0 })
-	var popupTls = []
-
-	generatePopupTl(uploadPopup, "uploadPopup")
-	generatePopupTl(createFolderPopup, "createFolderPopup")
-
-	function generatePopupTl(popup, name) {
+	function generatePopupTl(popup) {
 		var tl = new TimelineMax({
-			paused: true,
 			onStart: function() {
 				shade.style.display = "flex"
 				popup.style.display = "block"
@@ -109,26 +101,27 @@
 			onReverseComplete: function() {
 				shade.style.display = "none"
 				popup.style.display = "none"
+				shade.removeEventListener("click", closeShade)
+				tl.clear()
 			}
 		})
 
-		tl.add(shadeTl)
-		tl.from(popup, 0.35, { opacity: 0, y: -75 })
-
-		shade.addEventListener("click", function(e) {
-			console.log(name, tl.progress())
+		var closeShade = function(e) {
 			if (e.target.dataset.closePopup && tl.progress() == 1) {
 				tl.reverse()
 			}
-		})
+		}
 
-		popupTls[name] = tl
+		tl.fromTo(shade, 0.2, { opacity: 0 }, { opacity: 1 })
+		tl.fromTo(popup, 0.35, { opacity: 0, y: -75 }, { opacity: 1, y: 0 })
+
+		shade.addEventListener("click", closeShade)
 	}
 
 	uploadButton.onclick = function() {
-		popupTls["uploadPopup"].play()
+		generatePopupTl(uploadPopup)
 	}
 	createFolderButton.onclick = function() {
-		popupTls["createFolderPopup"].play()
+		generatePopupTl(createFolderPopup)
 	}
 </script>

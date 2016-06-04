@@ -9,6 +9,11 @@ var passport = require("passport")
 var LocalStrategy = require("passport-local").Strategy
 var appRoot = require("app-root-path")
 var Sha256 = require("./public/Sha256")
+var multer = require("multer")
+var mkdirp = require("mkdirp")
+
+// ensure some folders
+mkdirp(appRoot + "/expressdrive/uploads")
 
 // load up config
 var defaultConfig = require("./default.config")
@@ -91,13 +96,27 @@ class ExpressDrive {
 	constructor(app, passedConfig) {
 		this.app = app
 		this.restrictedPaths = {
-			f: true
+			f: true,
+			upload: true
 		}
 
 		this.init()
 	}
 
 	init() {
+		// upload setup
+		this.storage = multer.diskStorage({
+			destination: function (req, file, cb) {
+				cb(null, appRoot + "/expressdrive/uploads")
+			},
+			filename: function (req, file, cb) {
+				var fileSplit = file.originalname.split(".")
+				var extension = fileSplit[fileSplit.length - 1]
+				cb(null, Sha256.hash(file.originalname + Date.now()) + "." + extension)
+			}
+		})
+		this.upload = multer({ storage: this.storage })
+
 		this.app.use(bodyParser.urlencoded({ extended: false }))
 		this.app.use(bodyParser.json())
 		this.app.use(session({
@@ -155,6 +174,14 @@ class ExpressDrive {
 					req.logout()
 				}
 				res.redirect(config.path + "/login")
+			}
+		)
+
+		this.app.post(config.path + "/upload",
+			this.upload.single("file"),
+			(req, res) => {
+				console.log("req.file", req.file)
+				res.sendStatus(200)
 			}
 		)
 	}
