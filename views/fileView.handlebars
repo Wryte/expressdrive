@@ -12,21 +12,22 @@
 	</div>
 	<div class="main">
 		<div class="inner">
-			<div class="content">
+			<div id="content" class="content">
 				<div class="toolbar">
 					<div class="breadcrumbs">
-						<a href="#">/</a>
+						<a href="#">Home</a>
 						<i class="fa fa-angle-right"></i>
 						<a href="#">sub folder</a>
 						<i class="fa fa-angle-right"></i>
 						<a href="#">inner folder</a>
 					</div>
 					<div class="tool-container">
-						<i class="fa fa-upload fa-2x fa-fw"></i>
-						<span class="fa-stack">
+						<i id="uploadButton" class="fa fa-upload fa-2x fa-fw"></i>
+						<span id="createFolderButton" class="fa-stack">
 							<i class="fa fa-folder-o fa-stack-2x fa-fw"></i>
 							<i class="fa fa-plus-circle fa-stack-1x"></i>
 						</span>
+						<i class="fa fa-pencil fa-2x fa-fw"></i>
 						<i class="fa fa-trash-o fa-2x fa-fw"></i>
 					</div>
 				</div>
@@ -78,4 +79,56 @@
 			</div>
 		</div>
 	</div>
+	<div id="shade" class="shade" data-close-popup=true>
+		{{> uploadPopup }}
+		{{> createFolderPopup }}
+	</div>
 </div>
+
+<script type="text/javascript">
+	var shade = document.getElementById("shade")
+	var uploadButton = document.getElementById("uploadButton")
+	var uploadPopup = document.getElementById("uploadPopup")
+	var createFolderButton = document.getElementById("createFolderButton")
+	var createFolderPopup = document.getElementById("createFolderPopup")
+
+	var shadeTl = new TimelineMax()
+	shadeTl.from(shade, 0.2, { opacity: 0 })
+	var popupTls = []
+
+	generatePopupTl(uploadPopup, "uploadPopup")
+	generatePopupTl(createFolderPopup, "createFolderPopup")
+
+	function generatePopupTl(popup, name) {
+		var tl = new TimelineMax({
+			paused: true,
+			onStart: function() {
+				shade.style.display = "flex"
+				popup.style.display = "block"
+			},
+			onReverseComplete: function() {
+				shade.style.display = "none"
+				popup.style.display = "none"
+			}
+		})
+
+		tl.add(shadeTl)
+		tl.from(popup, 0.35, { opacity: 0, y: -75 })
+
+		shade.addEventListener("click", function(e) {
+			console.log(name, tl.progress())
+			if (e.target.dataset.closePopup && tl.progress() == 1) {
+				tl.reverse()
+			}
+		})
+
+		popupTls[name] = tl
+	}
+
+	uploadButton.onclick = function() {
+		popupTls["uploadPopup"].play()
+	}
+	createFolderButton.onclick = function() {
+		popupTls["createFolderPopup"].play()
+	}
+</script>

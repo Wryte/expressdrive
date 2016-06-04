@@ -4,6 +4,9 @@
 			<img src="http://thunderbayurc.com/images/logo.png">
 			<p>URC Thunder Bay</p>
 		</div>
+		<div id="messageCenter" class="message-center">
+			<p><i class="fa fa-exclamation-triangle"></i> <span>Please enter all fields</span></p>
+		</div>
 		<form id="loginForm" action="{{path}}/login" method="post">
 			<label for="username">username</label>
 			<input id="username" type="text" name="username">
@@ -12,7 +15,7 @@
 			<input id="password" type="hidden" name="password">
 		</form>
 		<div class="break"></div>
-		<button type="submit" form="loginForm">Log In</button>
+		<button class="primary" type="submit" form="loginForm">Log In</button>
 	</div>
 </div>
 
@@ -23,12 +26,12 @@
 	var password = document.getElementById("password")
 
 	loginForm.onsubmit = function(e) {
-		var message
 		var usernameValue = username.value
 		var passwordRawValue = passwordRaw.value
 
 		if (!usernameValue || usernameValue == "" || !passwordRawValue || passwordRawValue == "") {
 			message = "Please enter all fields"
+			showMessage()
 
 			e.preventDefault()
 			return false
@@ -36,5 +39,21 @@
 
 		passwordRaw.value = ""
 		password.value = Sha256.hash(usernameValue + passwordRawValue)
+	}
+
+	var messageCenter = document.getElementById("messageCenter")
+	var message = "{{message}}"
+	var tl = new TimelineMax()
+
+	tl.from(messageCenter, 0.5, { height: 0, padding: 0, margin: 0, opacity: 0 }, 0.5)
+	tl.pause()
+
+	if (message !== "") {
+		showMessage()
+	}
+
+	function showMessage() {
+		document.querySelector("#messageCenter span").textContent = message
+		tl.play()
 	}
 </script>

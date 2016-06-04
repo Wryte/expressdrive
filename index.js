@@ -44,10 +44,10 @@ passport.use(new LocalStrategy(
 	(req, userName, password, done) => {
 		var user = users[userName.toLowerCase()]
 		if (!user) {
-			req.session.loginMessage = "invalid username"
+			req.session.loginMessage = "Invalid username"
 			return done(null, false)
 		} else if (Sha256.hash(password + secret) !== user.password) {
-			req.session.loginMessage = "invalid password"
+			req.session.loginMessage = "Invalid password"
 			return done(null, false)
 		}
 		done(null, {

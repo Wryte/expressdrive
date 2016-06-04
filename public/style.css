@@ -65,14 +65,33 @@ a {
 
 .login-container button {
 	width: 100%;
+	font-size: 1.1em;
+}
+
+button {
+	cursor: pointer;
 	padding: 10px;
-	background-color: hsl(38,29%,55%);
 	border: none;
 	border-radius: 3px;
+	background-color: #999;
 	color: white;
 	font-family: Lato, Sans-Serif;
 	font-weight: 300;
-	font-size: 1.1em;
+	font-size: 0.9em;
+}
+button.primary {
+	background-color: hsl(38,29%,55%);
+}
+
+.message-center {
+	padding: 10px;
+	margin: 10px 0;
+	background-color: hsl(38,29%,80%);
+	color: hsl(38,29%,50%);
+	font-size: 0.8em;
+	border-radius: 2px;
+	text-align: center;
+	overflow: hidden;
 }
 
 .break {
@@ -115,6 +134,7 @@ a {
 }
 
 .file-page {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -198,7 +218,13 @@ a {
 }
 
 .tool-container > * {
-	margin-left: 10px;
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 3px;
+	margin-left: 2px;
+}
+.tool-container > *:hover {
+	background-color: #eee;
 }
 
 .file-table {
@@ -244,6 +270,49 @@ a {
 }
 
 .description-td .sub {
+	color: #999;
+	font-size: 0.8em;
+}
+
+.shade {
+	display: none;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	z-index: 1;
+	background-color: hsla(0,0%,0%,0.3);
+}
+
+.popup {
+	display: none;
+	width: 500px;
+	background-color: white;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+}
+
+.popup .header {
+	padding: 10px;
+	border-bottom: 1px solid #ddd;
+}
+
+.popup .body {
+	min-height: 200px;
+	background-color: #f8f8f8;
+}
+
+.popup .footer {
+	background-color: #ddd;
+	border-top: 1px solid #ccc;
+	padding: 10px;
+	text-align: right;
+}
+
+.popup .footer .sub {
 	color: #999;
 	font-size: 0.8em;
 }
