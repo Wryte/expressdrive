@@ -41,39 +41,19 @@
 						</tr>
 					</thead>
 					<tbody>
+						{{#each files}}
 						<tr>
 							<td><i class="fa fa-circle-o"></i></td>
 							<td class="description-td">
-								<i class="fa fa-folder-o fa-fw"></i>
+								<i class="fa fa-{{this.type}}-o fa-fw"></i>
 								<div class="text">
-									<p>Somefolder</p>
-									<p class="sub">created 2 days ago</p>
+									<p>{{this.filename}}</p>
+									<p class="sub">{{this.time}}</p>
 								</div>
 							</td>
-							<td>admin</td>
+							<td>{{this.created_by}}</td>
 						</tr>
-						<tr>
-							<td><i class="fa fa-circle-o"></i></td>
-							<td class="description-td">
-								<i class="fa fa-file-text-o fa-fw"></i>
-								<div class="text">
-									<p>Somefile.pdf</p>
-									<p class="sub">uploaded 2 days ago</p>
-								</div>
-							</td>
-							<td>admin</td>
-						</tr>
-						<tr>
-							<td><i class="fa fa-circle-o"></i></td>
-							<td class="description-td">
-								<i class="fa fa-file-text-o fa-fw"></i>
-								<div class="text">
-									<p>another.pdf</p>
-									<p class="sub">uploaded 5 weeks ago</p>
-								</div>
-							</td>
-							<td>craig.dykstra</td>
-						</tr>
+						{{/each}}
 					</tbody>
 				</table>
 			</div>

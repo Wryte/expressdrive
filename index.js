@@ -9,6 +9,7 @@ var passport = require("passport")
 var LocalStrategy = require("passport-local").Strategy
 var appRoot = require("app-root-path")
 var Sha256 = require("./public/Sha256")
+var FileMap = require("./FileMap")
 var multer = require("multer")
 var mkdirp = require("mkdirp")
 
@@ -99,6 +100,7 @@ class ExpressDrive {
 			f: true,
 			upload: true
 		}
+		this.fileMap = new FileMap()
 
 		this.init()
 	}
@@ -144,10 +146,24 @@ class ExpressDrive {
 			}
 		)
 
-		this.app.get([config.path, config.path + "/f"],
+		this.app.get([config.path, config.path + "/f", config.path + "/f/*"],
 			(req, res) => {
 				if (!req.user) { return res.redirect(config.path + "/login") }
-				res.send(templates.main({ page: "fileView", path: config.path, user: req.user }))
+
+				var urlComponents = req.originalUrl.substring(config.path.length).split("/")
+
+				res.send(templates.main({
+					page: "fileView",
+					path: config.path,
+					pwd: "/",
+					user: req.user,
+					files: [
+						{ filename: "documents", created_by: "admin", type: "folder", time: "3 months ago" },
+						{ filename: "document.pdf", created_by: "admin", type: "file-text", time: "3 months ago" },
+						{ filename: "file1.png", created_by: "craig.dykstra", type: "file-text", time: "4 days ago" },
+						{ filename: "picture.jpg", created_by: "craig.dykstra", type: "file-text", time: "2 weeks ago" },
+					]
+				}))
 			}
 		)
 
@@ -181,6 +197,7 @@ class ExpressDrive {
 			this.upload.single("file"),
 			(req, res) => {
 				console.log("req.file", req.file)
+				this.fileMap.addFile(req.file, "/")
 				res.sendStatus(200)
 			}
 		)
