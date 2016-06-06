@@ -12,4 +12,4 @@ class FileMap {
 	}
 }
 
-moduel.exports = FileMap
+module.exports = FileMap
