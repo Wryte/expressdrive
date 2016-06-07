@@ -151,6 +151,7 @@ button.primary, label.button.primary {
 
 .main {
 	flex-grow: 1;
+	overflow: auto;
 }
 
 .inner {

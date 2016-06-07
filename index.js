@@ -191,6 +191,13 @@ class ExpressDrive {
 				res.sendStatus(200)
 			}
 		)
+
+		this.app.post(config.path + "/createFolder",
+			(req, res) => {
+				this.fileMap.createFolder(req.body.name, "/", req.user)
+				res.sendStatus(200)
+			}
+		)
 	}
 }
 

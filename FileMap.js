@@ -45,7 +45,9 @@ class FileMap {
 	}
 	getNewFileName(filename, number) {
 		var fileSplit = filename.split(".")
-		fileSplit[fileSplit.length - 2] = fileSplit[fileSplit.length - 2] + " (" + number + ")"
+		var back = 2
+		if (fileSplit.length == 1) { back = 1 }
+		fileSplit[fileSplit.length - back] = fileSplit[fileSplit.length - back] + " (" + number + ")"
 		var newFilename = fileSplit.join(".")
 
 		if (newFilename in this.files) {
@@ -60,11 +62,24 @@ class FileMap {
 		}
 
 		this.files[file.originalname] = {
+			type: "file",
 			nameOnDisk: file.filename,
 			filename: file.originalname,
 			created_by: user.username,
+			date_created: (new Date()).getTime()
+		}
+	}
+	createFolder(name, path, user) {
+		if (name in this.files) {
+			name = this.getNewFileName(name, 2)
+		}
+
+		this.files[name] = {
+			type: "folder",
+			filename: name,
+			created_by: user.username,
 			date_created: (new Date()).getTime(),
-			type: "file"
+			files: {}
 		}
 	}
 }
