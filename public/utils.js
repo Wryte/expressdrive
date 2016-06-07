@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	__templates = {}
 	var templateScripts = document.querySelectorAll("script[type='text/x-handlebars-template']")
 
-	templateScripts.forEach(function(template) {
+	for (var i = 0; i < templateScripts.length; i++) {
+		var template = templateScripts[i]
 		__templates[template.id] = Handlebars.compile(template.innerHTML.trim())
-	})
+	}
 })
 
 function getNode(html, parent) {

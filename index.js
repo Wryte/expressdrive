@@ -115,9 +115,11 @@ class ExpressDrive {
 		this.app.use(passport.initialize())
 		this.app.use(passport.session())
 
+		// middleware to validate the user is logged in before viewing certain pages
 		this.app.use("*",
 			(req, res, next) => {
 				if (req.originalUrl.substring(0,config.path.length) == config.path) {
+					// reload templates with each request (TODO dev only)
 					loadTemplates(() => {
 						var urlComponents = req.originalUrl.substring(config.path.length).split("/")
 						if (!req.user && this.restrictedPaths[urlComponents[1]]) {
@@ -129,31 +131,35 @@ class ExpressDrive {
 			}
 		)
 
+		// fileView page when accessing from URL
 		this.app.get([config.path, config.path + "/f", config.path + "/f/*"],
 			(req, res) => {
 				if (!req.user) { return res.redirect(config.path + "/login") }
 
-				var files = this.fileMap.getFiles(req.originalUrl)
+				var fileStats = this.fileMap.getFiles(req.originalUrl)
 
 				res.send(templates.main({
 					page: "fileView",
 					path: config.path,
 					pwd: "/",
 					user: req.user,
-					files
+					files: fileStats.files,
+					stats: fileStats.stats
 				}))
 			}
 		)
 
+		// endpoint for AJAX fileTable
 		this.app.get([config.path + "/fileTable", config.path + "/fileTable/*"],
 			(req, res) => {
-				var files = this.fileMap.getFiles(req.originalUrl)
+				var fileStats = this.fileMap.getFiles(req.originalUrl)
 
 				res.send(templates.fileTable({
 					path: config.path,
 					pwd: "/",
 					user: req.user,
-					files
+					files: fileStats.files,
+					stats: fileStats.stats
 				}))
 			}
 		)

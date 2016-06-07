@@ -10,21 +10,24 @@ class FileMap {
 		return req.originalUrl.substring(config.path.length).split("/")
 	}
 	getFiles(path) {
-		var fileArray = []
+		var files = []
 
 		var folder = this.files
+		var fileCount = 0
+		var folderCount = 0
 
 		for (var k in folder) {
 			var file = folder[k]
-			fileArray.push({
+			files.push({
 				filename: file.filename,
 				type: file.type,
 				created_by: file.created_by,
-				time: moment(file.date_created).fromNow()
+				time: "created on " + moment(file.date_created).format("MMMM D, YYYY")
 			})
+			file.type == "file" ? fileCount++ : folderCount++
 		}
 
-		fileArray.sort((a,b) => {
+		files.sort((a,b) => {
 			if (a.type !== b.type) {
 				if (a.type == "folder") {
 					return -1
@@ -41,7 +44,29 @@ class FileMap {
 			return 0
 		})
 
-		return fileArray
+		var stats = []
+
+		if (fileCount > 0) {
+			stats.push(fileCount + " file")
+			if (fileCount > 1) {
+				stats.push("s")
+			}
+
+			if (folderCount > 0) {
+				stats.push(", ")
+			}
+		}
+
+		if (folderCount > 0) {
+			stats.push(folderCount + " folder")
+			if (folderCount > 1) {
+				stats.push("s")
+			}
+		}
+
+		stats = stats.join("")
+
+		return {files, stats}
 	}
 	getNewFileName(filename, number) {
 		var fileSplit = filename.split(".")

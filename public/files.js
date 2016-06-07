@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		xhr.onload = function(data) {
 			if (xhr.status == 200) {
-				console.log("fileTable", xhr.responseText)
 				fileTableContainer.innerHTML = xhr.responseText
 			}
 		}
@@ -121,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			xhr.onload = function(e) {
 				if (xhr.status == 200) {
-					folderNameInput.value = "New Folder"
+					setTimeout(function() { folderNameInput.value = "New Folder" }, 1000)
 					if (closeShade) { closeShade() }
 					reloadFileTable()
 				}

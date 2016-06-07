@@ -63,6 +63,9 @@ a {
 .login-container input[type="password"] {
 	font-size: 1.1em;
 	padding: 5px;
+	border-radius: 0px;
+	border: 1px solid #ddd;
+	-webkit-appearance: none;
 }
 
 .login-container button {
@@ -143,7 +146,7 @@ button.primary, label.button.primary {
 }
 
 .top-bar {
-	flex-shrink: 1;
+	flex-shrink: 0;
 	height: 50px;
 	background-color: white;
 	border-bottom: 1px solid #ddd;
@@ -152,6 +155,7 @@ button.primary, label.button.primary {
 .main {
 	flex-grow: 1;
 	overflow: auto;
+	-webkit-overflow-scrolling: touch;
 }
 
 .inner {
@@ -162,6 +166,8 @@ button.primary, label.button.primary {
 .top-bar .inner {
 	display: flex;
 	justify-content: space-between;
+	padding: 0px 20px;
+	box-sizing: border-box;
 	height: 100%;
 }
 
@@ -193,7 +199,7 @@ button.primary, label.button.primary {
 	background-color: white;
 	border: 1px solid #ddd;
 	padding: 20px;
-	margin: 20px 0;
+	margin: 20px 5px 40px 5px;
 }
 
 .toolbar {
@@ -386,6 +392,12 @@ button.primary, label.button.primary {
 	color: #999;
 }
 
+.folder-stats {
+	text-align: center;
+	color: #999;
+	font-size: 0.8em;
+}
+
 .create-folder-popup .body {
 	padding: 10px;
 }
@@ -398,8 +410,11 @@ button.primary, label.button.primary {
 }
 
 .create-folder-popup input {
+	box-sizing: border-box;
+	width: 100%;
 	padding: 5px;
 	font-size: 1.1em;
-	width: 100%;
-	box-sizing: border-box;
+	border-radius: 0px;
+	border: 1px solid #ddd;
+	-webkit-appearance: none;
 }
