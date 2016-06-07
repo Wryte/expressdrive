@@ -303,8 +303,7 @@ button.primary, label.button.primary {
 }
 
 .popup .body {
-	min-height: 200px;
-	background-color: #ddd;
+	background-color: #f8f8f8;
 	overflow-y: auto;
 }
 
@@ -325,7 +324,7 @@ button.primary, label.button.primary {
 	font-size: 0.8em;
 }
 
-#uploadPopup .body {
+.upload-popup .body {
 	height: 250px;
 }
 
@@ -341,6 +340,19 @@ button.primary, label.button.primary {
 	padding: 10px;
 }
 
+.upload-item .filename {
+	flex-grow: 1;
+	overflow: hidden;
+	font-size: 0.9em;
+	padding-right: 15px;
+}
+
+.upload-item .filename p {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .upload-item .main > i {
 	color: hsl(38,29%,58%);
 	font-size: 1.3em;
@@ -348,7 +360,7 @@ button.primary, label.button.primary {
 }
 
 .upload-item .sub {
-	font-size: 0.7em;
+	font-size: 0.8em;
 	color: #999;
 }
 
@@ -365,4 +377,28 @@ button.primary, label.button.primary {
 	height: 100%;
 	width: 0%;
 	background-color: hsl(38,29%,58%);
+}
+
+.no-files {
+	text-align: center;
+	padding: 75px 20px;
+	color: #999;
+}
+
+.create-folder-popup .body {
+	padding: 10px;
+}
+
+.create-folder-popup label {
+	display: block;
+	font-size: 0.8em;
+	color: #999;
+	margin-bottom: 5px;
+}
+
+.create-folder-popup input {
+	padding: 5px;
+	font-size: 1.1em;
+	width: 100%;
+	box-sizing: border-box;
 }

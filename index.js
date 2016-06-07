@@ -37,7 +37,7 @@ var secret = "M^Secr3tIsB3tter"
 var users = {
 	[config.adminUserName]: {
 		admin: true,
-		userName: config.adminUserName,
+		username: config.adminUserName,
 		password: Sha256.hash(Sha256.hash(config.adminUserName + config.adminPassword) + secret)
 	}
 }
@@ -47,8 +47,8 @@ passport.use(new LocalStrategy(
 	{
 		passReqToCallback: true
 	},
-	(req, userName, password, done) => {
-		var user = users[userName.toLowerCase()]
+	(req, username, password, done) => {
+		var user = users[username.toLowerCase()]
 		if (!user) {
 			req.session.loginMessage = "Invalid username"
 			return done(null, false)
@@ -58,13 +58,13 @@ passport.use(new LocalStrategy(
 		}
 		done(null, {
 			admin: user.admin,
-			userName: user.userName
+			username: user.username
 		})
 	}
 ))
 
 passport.serializeUser((user, done) => {
-	done(null, user.userName);
+	done(null, user.username);
 })
 
 passport.deserializeUser((id, done) => {
@@ -92,6 +92,29 @@ function loadTemplates(callback) {
 		})
 	})
 }
+
+Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+	switch (operator) {
+		case '==':
+			return (v1 == v2) ? options.fn(this) : options.inverse(this);
+		case '===':
+			return (v1 === v2) ? options.fn(this) : options.inverse(this);
+		case '<':
+			return (v1 < v2) ? options.fn(this) : options.inverse(this);
+		case '<=':
+			return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+		case '>':
+			return (v1 > v2) ? options.fn(this) : options.inverse(this);
+		case '>=':
+			return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+		case '&&':
+			return (v1 && v2) ? options.fn(this) : options.inverse(this);
+		case '||':
+			return (v1 || v2) ? options.fn(this) : options.inverse(this);
+		default:
+			return options.inverse(this);
+	}
+});
 
 class ExpressDrive {
 	constructor(app, passedConfig) {
@@ -150,19 +173,14 @@ class ExpressDrive {
 			(req, res) => {
 				if (!req.user) { return res.redirect(config.path + "/login") }
 
-				var urlComponents = req.originalUrl.substring(config.path.length).split("/")
+				var files = this.fileMap.getFiles(req.originalUrl)
 
 				res.send(templates.main({
 					page: "fileView",
 					path: config.path,
 					pwd: "/",
 					user: req.user,
-					files: [
-						{ filename: "documents", created_by: "admin", type: "folder", time: "3 months ago" },
-						{ filename: "document.pdf", created_by: "admin", type: "file-text", time: "3 months ago" },
-						{ filename: "file1.png", created_by: "craig.dykstra", type: "file-text", time: "4 days ago" },
-						{ filename: "picture.jpg", created_by: "craig.dykstra", type: "file-text", time: "2 weeks ago" },
-					]
+					files
 				}))
 			}
 		)
@@ -197,7 +215,7 @@ class ExpressDrive {
 			this.upload.single("file"),
 			(req, res) => {
 				console.log("req.file", req.file)
-				this.fileMap.addFile(req.file, "/")
+				this.fileMap.addFile(req.file, "/", req.user)
 				res.sendStatus(200)
 			}
 		)

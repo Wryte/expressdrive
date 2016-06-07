@@ -1,11 +1,13 @@
-<div id="createFolderPopup" class="popup">
-	<div class="header">Create folder in 'Folder 1'</div>
-	<div class="body">
-		<label>Folder Name</label>
-		<input type="text" name="">
-	</div>
-	<div class="footer">
-		<button class="primary">Create Folder</button>
-		<button data-close-popup=true>Cancel</button>
-	</div>
+<div id="createFolderPopup" class="popup create-folder-popup">
+	<form id="createFolderForm" action="{{path}}/createFolder" method="post">
+		<div class="header">Create folder in 'Folder 1'</div>
+		<div class="body">
+			<label>Folder Name</label>
+			<input type="text" name="name" value="New Folder" onfocus="this.select()">
+		</div>
+		<div class="footer">
+			<button class="primary">Create Folder</button>
+			<button data-close-popup=true>Cancel</button>
+		</div>
+	</form>
 </div>
