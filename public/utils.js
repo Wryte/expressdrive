@@ -7,7 +7,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	})
 })
 
-function getNode(name, props, parent) {
+function getNode(html, parent) {
+	var div = document.createElement(parent || "div")
+	div.innerHTML = html
+	return div.firstChild
+}
+
+function templateGetNode(name, props, parent) {
 	var div = document.createElement(parent || "div")
 	div.innerHTML = __templates[name + "Template"](props)
 	return div.firstChild

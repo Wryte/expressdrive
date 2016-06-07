@@ -5,6 +5,9 @@ var session = require("express-session")
 var bodyParser = require("body-parser")
 var fs = require("fs")
 var Handlebars = require("handlebars")
+var templateLoader = require("./templateLoader")
+var loadTemplates = templateLoader.loadTemplates
+var templates = templateLoader.templates
 var passport = require("passport")
 var LocalStrategy = require("passport-local").Strategy
 var appRoot = require("app-root-path")
@@ -71,57 +74,14 @@ passport.deserializeUser((id, done) => {
 	done(null, users[id])
 })
 
-// set up templates
-var templates = {}
-function loadTemplates(callback) {
-	fs.readdir(__dirname + "/views", (err, files) => {
-		var fileCount = 0
-		files.forEach((file, i) => {
-			var templateName = file.split(".")[0]
-			fs.readFile(__dirname + "/views/"+file, "utf8", (err, data) => {
-				templates[templateName] = Handlebars.compile(data)
-
-				Handlebars.unregisterPartial(templateName)
-				Handlebars.registerPartial(templateName, data)
-
-				fileCount++
-				if (fileCount == files.length && callback) {
-					callback()
-				}
-			})
-		})
-	})
-}
-
-Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
-	switch (operator) {
-		case '==':
-			return (v1 == v2) ? options.fn(this) : options.inverse(this);
-		case '===':
-			return (v1 === v2) ? options.fn(this) : options.inverse(this);
-		case '<':
-			return (v1 < v2) ? options.fn(this) : options.inverse(this);
-		case '<=':
-			return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-		case '>':
-			return (v1 > v2) ? options.fn(this) : options.inverse(this);
-		case '>=':
-			return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-		case '&&':
-			return (v1 && v2) ? options.fn(this) : options.inverse(this);
-		case '||':
-			return (v1 || v2) ? options.fn(this) : options.inverse(this);
-		default:
-			return options.inverse(this);
-	}
-});
-
 class ExpressDrive {
 	constructor(app, passedConfig) {
 		this.app = app
 		this.restrictedPaths = {
 			f: true,
-			upload: true
+			upload: true,
+			createFolder: true,
+			fileTable: true
 		}
 		this.fileMap = new FileMap()
 
@@ -185,6 +145,19 @@ class ExpressDrive {
 			}
 		)
 
+		this.app.get([config.path + "/fileTable", config.path + "/fileTable/*"],
+			(req, res) => {
+				var files = this.fileMap.getFiles(req.originalUrl)
+
+				res.send(templates.fileTable({
+					path: config.path,
+					pwd: "/",
+					user: req.user,
+					files
+				}))
+			}
+		)
+
 		this.app.get(config.path + "/login",
 			(req, res) => {
 				if (req.user) { return res.redirect(config.path) }
@@ -214,7 +187,6 @@ class ExpressDrive {
 		this.app.post(config.path + "/upload",
 			this.upload.single("file"),
 			(req, res) => {
-				console.log("req.file", req.file)
 				this.fileMap.addFile(req.file, "/", req.user)
 				res.sendStatus(200)
 			}

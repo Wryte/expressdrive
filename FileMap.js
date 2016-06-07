@@ -24,6 +24,23 @@ class FileMap {
 			})
 		}
 
+		fileArray.sort((a,b) => {
+			if (a.type !== b.type) {
+				if (a.type == "folder") {
+					return -1
+				} else {
+					return 1
+				}
+			} else if (a.filename !== b.filename) {
+				if (a.filename >= b.filename) {
+					return 1
+				} else {
+					return -1
+				}
+			}
+			return 0
+		})
+
 		return fileArray
 	}
 	getNewFileName(filename, number) {
