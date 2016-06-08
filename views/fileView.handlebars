@@ -12,7 +12,14 @@
 	</div>
 	<div class="main">
 		<div class="inner">
-			<div id="content" class="content">
+			<div class="content">
+				{{#if badRequest}}
+				<div class="bad-request">
+					<i class="fa fa-exclamation-triangle"></i>
+					<p>Oops! The file or folder you requested does not exist.</p>
+					<p><a class="button primary" href="{{path}}">Go to the home folder</a></p>
+				</div>
+				{{else}}
 				<div class="toolbar">
 					<div class="breadcrumbs">
 						{{#each breadcrumbs}}
@@ -37,6 +44,7 @@
 				<div id="fileTableContainer">
 					{{> fileTable }}
 				</div>
+				{{/if}}
 			</div>
 		</div>
 	</div>

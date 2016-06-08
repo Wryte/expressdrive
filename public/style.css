@@ -74,7 +74,10 @@ a {
 	font-size: 1.1em;
 }
 
-button, label.button {
+button,
+a.button,
+label.button {
+	display: inline-block;
 	cursor: pointer;
 	padding: 10px;
 	border: none;
@@ -85,7 +88,9 @@ button, label.button {
 	font-weight: 300;
 	font-size: 0.9em;
 }
-button.primary, label.button.primary {
+button.primary,
+a.button.primary,
+label.button.primary {
 	background-color: hsl(38,29%,55%);
 }
 
@@ -392,6 +397,24 @@ button.primary, label.button.primary {
 	text-align: center;
 	padding: 75px 20px;
 	color: #999;
+}
+
+.bad-request {
+	text-align: center;
+	padding: 75px 20px;
+}
+
+.bad-request i.fa {
+	font-size: 4.0em;
+	color: hsl(0,39%,58%);
+	margin-bottom: 20px;
+}
+
+.bad-request p {
+	margin-bottom: 20px;
+}
+.bad-request p:last-child {
+	margin-bottom: 0;
 }
 
 .folder-stats {

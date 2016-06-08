@@ -141,6 +141,15 @@ class ExpressDrive {
 				var cleanPath = req.originalUrl.substring(config.path.length + "/f".length)
 				var file = this.fileMap.getFileFromPath(cleanPath)
 
+				if (file == undefined) {
+					return res.send(templates.main({
+						page: "fileView",
+						path: config.path,
+						badRequest: true,
+						user: req.user
+					}))
+				}
+
 				if (file.type == "folder") {
 					var folderData = this.fileMap.getFolderData(file, cleanPath)
 
