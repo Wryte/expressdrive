@@ -434,18 +434,21 @@ label.button.primary {
 	font-size: 0.8em;
 }
 
-.create-folder-popup .body {
+.create-folder-popup .body,
+.edit-popup .body {
 	padding: 10px;
 }
 
-.create-folder-popup label {
+.create-folder-popup label,
+.edit-popup label {
 	display: block;
 	font-size: 0.8em;
 	color: #999;
 	margin-bottom: 5px;
 }
 
-.create-folder-popup input {
+.create-folder-popup input,
+.edit-popup input {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 5px;

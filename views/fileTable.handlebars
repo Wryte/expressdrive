@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{{#each files}}
-		<tr class="file-element" data-uri="{{this.uri}}">
+		<tr class="file-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
 				{{#ifCond this.type "==" "file"}}

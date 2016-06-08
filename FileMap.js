@@ -196,6 +196,20 @@ class FileMap {
 	sanitizeFilename(name) {
 		return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
 	}
+	editFile(name, path) {
+		path = decodeURI(path)
+		var pathSplit = path.split("/")
+		var oldFilename = pathSplit[pathSplit.length - 1]
+		var folderPath = path.substring(0, path.length - oldFilename.length)
+		var folder = this.getFileFromPath(folderPath)
+		var file = this.getFileFromPath(path)
+
+		if (folder && file) {
+			delete folder.files[oldFilename]
+			folder.files[name] = file
+			file.filename = name
+		}
+	}
 }
 
 module.exports = FileMap

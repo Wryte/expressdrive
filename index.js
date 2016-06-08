@@ -83,7 +83,8 @@ class ExpressDrive {
 			upload: true,
 			createFolder: true,
 			fileTable: true,
-			deleteFiles: true
+			deleteFiles: true,
+			editFile: true
 		}
 		this.fileMap = new FileMap()
 
@@ -240,6 +241,13 @@ class ExpressDrive {
 					fs.unlink(path.join(appRoot.path, 'expressdrive', 'uploads', deletedFiles[i].nameOnDisk))
 				}
 
+				res.sendStatus(200)
+			}
+		)
+
+		this.app.post(config.path + "/editFile",
+			(req, res) => {
+				this.fileMap.editFile(req.body.name, req.body.filePath)
 				res.sendStatus(200)
 			}
 		)

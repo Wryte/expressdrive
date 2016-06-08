@@ -25,13 +25,14 @@ document.addEventListener("DOMContentLoaded", function() {
 	var createFolderPopup = document.getElementById("createFolderPopup")
 
 	var editPopupButton = document.getElementById("editPopupButton")
+	var editPopup = document.getElementById("editPopup")
 
 	var deletePopupButton = document.getElementById("deletePopupButton")
 	var deletePopup = document.getElementById("deletePopup")
 
 	var closeShade
 
-	function generatePopupTl(popup) {
+	function generatePopupTL(popup) {
 		var tl = new TimelineMax({
 			onStart: function() {
 				shade.style.display = "flex"
@@ -59,17 +60,25 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	uploadButton.onclick = function() {
-		generatePopupTl(uploadPopup)
+		generatePopupTL(uploadPopup)
 	}
 	createFolderPopupButton.onclick = function() {
-		generatePopupTl(createFolderPopup)
+		generatePopupTL(createFolderPopup)
 	}
 	deletePopupButton.onclick = function() {
 		var selected = getSelected()
 		if (selected.length > 0) {
 			document.getElementById("deleteHeaderSpan").innerText = selected.length + " item" + (selected.length > 1 ? "s" : "")
 			document.getElementById("deleteBodySpan").innerText = selected.length > 1 ? "these items" : "this item"
-			generatePopupTl(deletePopup)
+			generatePopupTL(deletePopup)
+		}
+	}
+	editPopupButton.onclick = function() {
+		var selected = getSelected()
+		if (selected.length == 1) {
+			document.getElementById("editHeaderSpan").innerText = selected[0].dataset.filename
+			filenameInput.value = selected[0].dataset.filename
+			generatePopupTL(editPopup)
 		}
 	}
 
@@ -124,7 +133,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	folderNameInput.onkeyup = function(e) {
 		if (e.keyCode == 13) { createFolder() }
-		this.value = sanitizeFileName(this.value)
+		var sanitizedName = sanitizeFileName(this.value)
+		if (this.value !== sanitizedName) {
+			this.value = sanitizeFileName(this.value)
+		}
 	}
 
 	createFolderButton.onclick = createFolder
@@ -175,6 +187,40 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 
 		xhr.send(JSON.stringify({ files: deleteFiles }))
+	}
+
+	// edit popup
+	var filenameInput = document.getElementById("filenameInput")
+	var editButton = document.getElementById("editButton")
+
+	editButton.onclick = editFile
+	filenameInput.onkeyup = function(e) {
+		if (e.keyCode == 13) { editFile() }
+		var sanitizedName = sanitizeFileName(this.value)
+		if (this.value !== sanitizedName) {
+			this.value = sanitizeFileName(this.value)
+		}
+	}
+
+	function editFile() {
+		var selected = getSelected()
+		var filename = filenameInput.value
+
+		if (filename !== "") {
+			var xhr = new XMLHttpRequest()
+
+			xhr.open("POST", __path + "/editFile")
+			xhr.setRequestHeader("Content-type", "application/json");
+
+			xhr.onload = function(e) {
+				if (xhr.status == 200) {
+					if (closeShade) { closeShade() }
+					reloadFileTable()
+				}
+			}
+
+			xhr.send(JSON.stringify({ name: filename, filePath: selected[0].dataset.uri }))
+		}
 	}
 
 	// file selection
