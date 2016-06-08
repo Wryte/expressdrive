@@ -126,6 +126,7 @@ class FileMap {
 	}
 	addFile(file, path, user) {
 		var folder = this.getFileFromPath(path)
+		file.originalname = this.sanitizeFilename(file.originalname)
 
 		if (file.originalname in folder.files) {
 			file.originalname = this.getNewFileName(folder, file.originalname, 2)
@@ -141,6 +142,7 @@ class FileMap {
 	}
 	createFolder(name, path, user) {
 		var folder = this.getFileFromPath(path)
+		name = this.sanitizeFilename(name)
 
 		if (name in folder.files) {
 			name = this.getNewFileName(folder, name, 2)
@@ -190,6 +192,9 @@ class FileMap {
 		}
 
 		return files
+	}
+	sanitizeFilename(name) {
+		return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
 	}
 }
 

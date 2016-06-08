@@ -122,7 +122,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	var folderNameInput = document.getElementById("folderNameInput")
 	var createFolderButton = document.getElementById("createFolderButton")
 
-	folderNameInput.onkeyup = function(e) { if (e.keyCode == 13) { createFolder() } }
+	folderNameInput.onkeyup = function(e) {
+		if (e.keyCode == 13) { createFolder() }
+		this.value = sanitizeFileName(this.value)
+	}
+
 	createFolderButton.onclick = createFolder
 
 	function createFolder() {

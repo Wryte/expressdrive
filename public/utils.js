@@ -117,3 +117,7 @@ function removeClass(el, classString) {
 function hasClass(el, classString) {
 	return (" " + el.className + " ").replace(/[\t\r\n\f]/g, " ").indexOf(" " + classString + " ") > -1
 }
+
+function sanitizeFileName(name) {
+	return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
+}
