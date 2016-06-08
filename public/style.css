@@ -238,14 +238,16 @@ label.button.primary {
 	padding: 4px;
 	border-radius: 3px;
 	margin-left: 2px;
-	transition: background-color 0.5s;
+	transition: background-color 0.5s,
+		color 0.5s;
 }
-.tool-container > *:hover {
+.tool-container > *:not(.disabled):hover {
 	background-color: #eee;
 }
 
 .tool-container .disabled {
-	color: #999;
+	cursor: not-allowed;
+	color: #ccc;
 }
 
 .file-table {

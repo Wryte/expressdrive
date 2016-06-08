@@ -4,11 +4,25 @@ var moment = require("moment")
 var fs = require("fs")
 
 class FileMap {
-	constructor() {
-		this.homeFolder = {
-			type: "folder",
-			files: {}
-		}
+	constructor(props) {
+		this.saveDestination = props.saveDestination
+
+		this.load()
+	}
+	save() {
+		fs.writeFile(this.saveDestination, JSON.stringify(this.homeFolder))
+	}
+	load() {
+		fs.readFile(this.saveDestination, (err, data) => {
+			if (data) {
+				this.homeFolder = JSON.parse(data)
+			} else {
+				this.homeFolder = {
+					type: "folder",
+					files: {}
+				}
+			}
+		})
 	}
 	navigateToFile(folderObj, pathArray) {
 		if (pathArray.length == 0) {
@@ -139,6 +153,8 @@ class FileMap {
 			created_by: user.username,
 			date_created: (new Date()).getTime()
 		}
+
+		this.save()
 	}
 	createFolder(name, path, user) {
 		var folder = this.getFileFromPath(path)
@@ -155,6 +171,8 @@ class FileMap {
 			date_created: (new Date()).getTime(),
 			files: {}
 		}
+
+		this.save()
 	}
 	deleteFiles(filePaths) {
 		var deletedFiles = []
@@ -163,7 +181,7 @@ class FileMap {
 			var path = decodeURI(filePaths[i])
 			var pathSplit = path.split("/")
 			var filename = pathSplit[pathSplit.length - 1]
-			var folderPath = path.substring(0, path.length - filename.length)
+			var folderPath = path.substring(0, path.length - filename.length - 1)
 			var folder = this.getFileFromPath(folderPath)
 
 			if (folder && filename in folder.files) {
@@ -176,6 +194,8 @@ class FileMap {
 				delete folder.files[filename]
 			}
 		}
+
+		this.save()
 
 		return deletedFiles
 	}
@@ -209,6 +229,8 @@ class FileMap {
 			folder.files[name] = file
 			file.filename = name
 		}
+
+		this.save()
 	}
 }
 

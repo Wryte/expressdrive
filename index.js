@@ -86,7 +86,7 @@ class ExpressDrive {
 			deleteFiles: true,
 			editFile: true
 		}
-		this.fileMap = new FileMap()
+		this.fileMap = new FileMap({ saveDestination: appRoot + "/expressdrive/files.json"})
 
 		this.init()
 	}
