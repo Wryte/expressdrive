@@ -2,14 +2,14 @@
 <table class="file-table">
 	<thead>
 		<tr>
-			<th class="shrink text-center"><i class="fa fa-circle-o"></i></th>
+			<th class="shrink text-center select-all-td"><i class="fa fa-circle-o"></i></th>
 			<th class="indent">Filename</th>
 			<th class="shrink">Created By</th>
 		</tr>
 	</thead>
 	<tbody>
 		{{#each files}}
-		<tr>
+		<tr class="file-element" data-uri="{{this.uri}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
 				{{#ifCond this.type "==" "file"}}

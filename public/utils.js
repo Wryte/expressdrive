@@ -88,3 +88,32 @@ document.addEventListener("click", function(e) {
 		}
 	}
 })
+
+function addClass(el, classString) {
+	var splitClass = el.className.split(" ")
+
+	for (var i = 0; i < splitClass.length; i++) {
+		if (splitClass[i] == classString) {
+			return
+		}
+	}
+
+	splitClass.push(classString)
+	el.className = splitClass.join(" ")
+}
+
+function removeClass(el, classString) {
+	var splitClass = el.className.split(" ")
+
+	for (var i = 0; i < splitClass.length; i++) {
+		if (splitClass[i] == classString) {
+			splitClass.splice(i, 1)
+			el.className = splitClass.join(" ")
+			return
+		}
+	}
+}
+
+function hasClass(el, classString) {
+	return (" " + el.className + " ").replace(/[\t\r\n\f]/g, " ").indexOf(" " + classString + " ") > -1
+}

@@ -82,7 +82,8 @@ class ExpressDrive {
 			f: true,
 			upload: true,
 			createFolder: true,
-			fileTable: true
+			fileTable: true,
+			deleteFiles: true
 		}
 		this.fileMap = new FileMap()
 
@@ -230,6 +231,21 @@ class ExpressDrive {
 				res.sendStatus(200)
 			}
 		)
+
+		this.app.post(config.path + "/deleteFiles",
+			(req, res) => {
+				console.log("delete request", req.body.files)
+				res.sendStatus(200)
+			}
+		)
+
+		// error handling middleware
+		this.app.use([config.path, config.path + "/*"],
+			(err, req, res, next) => {
+				console.error(err.stack);
+				res.status(500).send('Something broke!');
+			}
+		);
 	}
 }
 

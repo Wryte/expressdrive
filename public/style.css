@@ -192,6 +192,7 @@ label.button.primary {
 	color: hsl(38,29%,55%);
 	padding: 4px;
 	border-radius: 3px;
+	transition: background-color 0.5s;
 }
 .top-bar .sign-out:hover {
 	background-color: #eee;
@@ -237,9 +238,14 @@ label.button.primary {
 	padding: 4px;
 	border-radius: 3px;
 	margin-left: 2px;
+	transition: background-color 0.5s;
 }
 .tool-container > *:hover {
 	background-color: #eee;
+}
+
+.tool-container .disabled {
+	color: #999;
 }
 
 .file-table {
@@ -273,7 +279,8 @@ label.button.primary {
 	border-bottom: 1px solid #ddd;
 }
 
-.file-table .select-td {
+.file-table .select-td,
+.file-table .select-all-td {
 	cursor: pointer;
 }
 
@@ -446,4 +453,9 @@ label.button.primary {
 	border-radius: 0px;
 	border: 1px solid #ddd;
 	-webkit-appearance: none;
+}
+
+.delete-popup .body {
+	padding: 20px;
+	text-align: center;
 }

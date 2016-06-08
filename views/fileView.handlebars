@@ -36,8 +36,8 @@
 							<i class="fa fa-folder-o fa-stack-2x fa-fw"></i>
 							<i class="fa fa-plus-circle fa-stack-1x"></i>
 						</span>
-						<i class="fa fa-pencil fa-2x fa-fw"></i>
-						<i class="fa fa-trash-o fa-2x fa-fw"></i>
+						<i id="editPopupButton" class="fa fa-pencil fa-2x fa-fw disabled"></i>
+						<i id="deletePopupButton" class="fa fa-trash-o fa-2x fa-fw disabled"></i>
 					</div>
 				</div>
 				<div class="break"></div>
@@ -51,6 +51,7 @@
 	<div id="shade" class="shade" data-close-popup=true>
 		{{> uploadPopup }}
 		{{> createFolderPopup }}
+		{{> deletePopup }}
 	</div>
 </div>
 
