@@ -18,7 +18,9 @@
 					 <i class="fa fa-folder-o fa-fw"></i>
 				{{/ifCond}}
 				<div class="text">
-					<p><a href="{{../path}}/f{{this.uri}}">{{this.filename}}</a></p>
+					<p><a href="{{../path}}/f{{this.uri}}" {{#ifCond this.type "==" "file"}} target="_blank" {{/ifCond}}>
+							{{this.filename}}
+					</a></p>
 					<p class="sub">{{this.time}}</p>
 				</div>
 			</td>

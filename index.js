@@ -4,6 +4,7 @@ var express = require("express")
 var session = require("express-session")
 var bodyParser = require("body-parser")
 var fs = require("fs")
+var path = require("path")
 var Handlebars = require("handlebars")
 var templateLoader = require("./templateLoader")
 var loadTemplates = templateLoader.loadTemplates
@@ -137,17 +138,25 @@ class ExpressDrive {
 				if (!req.user) { return res.redirect(config.path + "/login") }
 				if (req.originalUrl == config.path) { req.originalUrl = config.path + "/f" }
 
-				var folderData = this.fileMap.getFolderData(req.originalUrl.substring(config.path.length + "/f".length))
+				var cleanPath = req.originalUrl.substring(config.path.length + "/f".length)
+				var file = this.fileMap.getFileFromPath(cleanPath)
 
-				res.setHeader('Cache-Control', 'no-cache, no-store')
-				res.send(templates.main({
-					page: "fileView",
-					path: config.path,
-					user: req.user,
-					files: folderData.files,
-					stats: folderData.stats,
-					breadcrumbs: folderData.breadcrumbs
-				}))
+				if (file.type == "folder") {
+					var folderData = this.fileMap.getFolderData(file, cleanPath)
+
+					res.setHeader('Cache-Control', 'no-cache, no-store')
+					res.setHeader('Content-Type', 'text/html')
+					res.send(templates.main({
+						page: "fileView",
+						path: config.path,
+						user: req.user,
+						files: folderData.files,
+						stats: folderData.stats,
+						breadcrumbs: folderData.breadcrumbs
+					}))
+				} else {
+					res.sendFile(path.join(appRoot.path, 'expressdrive', 'uploads', file.nameOnDisk))
+				}
 			}
 		)
 

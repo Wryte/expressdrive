@@ -5,6 +5,7 @@ var moment = require("moment")
 class FileMap {
 	constructor() {
 		this.homeFolder = {
+			type: "folder",
 			files: {}
 		}
 	}
@@ -35,8 +36,11 @@ class FileMap {
 
 		return this.navigateToFile(this.homeFolder, pathSplit)
 	}
-	getFolderData(path) {
-		var folder = this.getFileFromPath(path)
+	getFolderData(folder, path) {
+		if (typeof folder == "string") {
+			path = folder
+			folder = this.getFileFromPath(path)
+		}
 		
 		var files = []
 
