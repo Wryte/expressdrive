@@ -14,6 +14,13 @@ function getNode(html, parent) {
 	return div.firstChild
 }
 
+function getCurrentPath() {
+	var path = window.location.pathname
+	if (path == __path) { path = path + "/f" }
+	path = path.substring(__path.length + "/f".length)
+	return path
+}
+
 function templateGetNode(name, props, parent) {
 	var div = document.createElement(parent || "div")
 	div.innerHTML = __templates[name + "Template"](props)

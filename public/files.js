@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	function reloadFileTable() {
 		var xhr = new XMLHttpRequest()
-		xhr.open("GET", __path + "/fileTable")
+		xhr.open("GET", __path + "/fileTable" + getCurrentPath())
 
 		xhr.onload = function(data) {
 			if (xhr.status == 200) {
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		formData.append('file', file, file.name)
 
 		var xhr = new XMLHttpRequest()
-		xhr.open('POST', __path + "/upload", true)
+		xhr.open('POST', __path + "/upload?target="+getCurrentPath(), true)
 
 		xhr.upload.addEventListener("progress", function(e) {
 			if (e.lengthComputable) {
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 			}
 
-			xhr.send(JSON.stringify({ name: folderName }))
+			xhr.send(JSON.stringify({ name: folderName, target: getCurrentPath() }))
 		}
 	}
 })

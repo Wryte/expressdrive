@@ -135,16 +135,17 @@ class ExpressDrive {
 		this.app.get([config.path, config.path + "/f", config.path + "/f/*"],
 			(req, res) => {
 				if (!req.user) { return res.redirect(config.path + "/login") }
+				if (req.originalUrl == config.path) { req.originalUrl = config.path + "/f" }
 
-				var fileStats = this.fileMap.getFiles(req.originalUrl)
+				var folderData = this.fileMap.getFolderData(req.originalUrl.substring(config.path.length + "/f".length))
 
+				res.setHeader('Cache-Control', 'no-cache, no-store')
 				res.send(templates.main({
 					page: "fileView",
 					path: config.path,
-					pwd: "/",
 					user: req.user,
-					files: fileStats.files,
-					stats: fileStats.stats
+					files: folderData.files,
+					stats: folderData.stats
 				}))
 			}
 		)
@@ -152,14 +153,13 @@ class ExpressDrive {
 		// endpoint for AJAX fileTable
 		this.app.get([config.path + "/fileTable", config.path + "/fileTable/*"],
 			(req, res) => {
-				var fileStats = this.fileMap.getFiles(req.originalUrl)
+				var folderData = this.fileMap.getFolderData(req.originalUrl.substring(config.path.length + "/fileTable".length))
 
 				res.send(templates.fileTable({
 					path: config.path,
-					pwd: "/",
 					user: req.user,
-					files: fileStats.files,
-					stats: fileStats.stats
+					files: folderData.files,
+					stats: folderData.stats
 				}))
 			}
 		)
@@ -193,14 +193,14 @@ class ExpressDrive {
 		this.app.post(config.path + "/upload",
 			this.upload.single("file"),
 			(req, res) => {
-				this.fileMap.addFile(req.file, "/", req.user)
+				this.fileMap.addFile(req.file, req.query.target, req.user)
 				res.sendStatus(200)
 			}
 		)
 
 		this.app.post(config.path + "/createFolder",
 			(req, res) => {
-				this.fileMap.createFolder(req.body.name, "/", req.user)
+				this.fileMap.createFolder(req.body.name, req.body.target, req.user)
 				res.sendStatus(200)
 			}
 		)
