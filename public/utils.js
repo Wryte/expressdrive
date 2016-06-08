@@ -46,3 +46,45 @@ function templateGetNode(name, props, parent) {
 function toMB(size) {
 	return (Math.floor(size / (1024 * 1024) * 10) / 10) + "MB"
 }
+
+if (!Element.prototype.matches)
+{
+	var ep = Element.prototype;
+
+	if (ep.webkitMatchesSelector) { ep.matches = ep.webkitMatchesSelector; }
+	if (ep.msMatchesSelector) { ep.matches = ep.msMatchesSelector; }
+	if (ep.mozMatchesSelector) { ep.matches = ep.mozMatchesSelector; }
+}
+
+var __binds = { click: [] }
+function bindOn(action, selector, func) {
+	__binds[action].push({
+		selector: selector,
+		func: func
+	})
+}
+function unbindOn(action, func) {
+	for (var i = 0; i < __binds[action].length; i++) {
+		var item = __binds[action][i]
+		if (item.func == func) {
+			__binds[actoin].splice(i,1)
+			return
+		}
+	}
+}
+
+document.addEventListener("click", function(e) {
+	for (var i = 0; i < __binds.click.length; i++) {
+		var item = __binds.click[i]
+		var found
+		var el = e.target
+
+		while (el && !(found = el.matches(item.selector))) {
+			el = el.parentElement
+		}
+
+		if (found) {
+			item.func.call(el, e)
+		}
+	}
+})

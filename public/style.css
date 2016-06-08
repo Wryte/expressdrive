@@ -273,6 +273,10 @@ label.button.primary {
 	border-bottom: 1px solid #ddd;
 }
 
+.file-table .select-td {
+	cursor: pointer;
+}
+
 .description-td {
 	display: flex;
 	flex-direction: row;

@@ -129,4 +129,20 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.send(JSON.stringify({ name: folderName, target: getCurrentPath() }))
 		}
 	}
+
+	// file selection
+	bindOn("click", ".select-td", function(e) {
+		var icon = this.querySelector(".fa")
+
+		if (this.dataset.selected) {
+			icon.className = "fa fa-circle-o fa-fw"
+			TweenMax.to(icon, 0.2, { color: "#333", rotation: 0 })
+			delete this.dataset.selected
+		} else {
+			icon.className = "fa fa-check-circle-o fa-fw"
+			TweenMax.to(icon, 0.2, { color: "#75B37A", rotation: 360 })
+			this.dataset.selected = true
+		}
+
+	})
 })
