@@ -26,7 +26,7 @@ class FileMap {
 		return
 	}
 	getFileFromPath(path) {
-		var pathSplit = path.split("/")
+		var pathSplit = decodeURI(path).split("/")
 		var first = pathSplit[0]
 		while (first === "") {
 			pathSplit.shift()
@@ -50,7 +50,7 @@ class FileMap {
 				type: file.type,
 				created_by: file.created_by,
 				time: "created on " + moment(file.date_created).format("MMMM D, YYYY"),
-				uri: encodeURI(path + "/" + file.filename)
+				uri: path + "/" + encodeURI(file.filename)
 			})
 			file.type == "file" ? fileCount++ : folderCount++
 		}
@@ -94,13 +94,13 @@ class FileMap {
 
 		// generate the breadcrumbs
 		var breadcrumbs = []
-		var pathSplit = path.split("/")
+		var pathSplit = decodeURI(path).split("/")
 		var breadcrumbStack = []
 
 		for (var i = 0; i < pathSplit.length; i++) {
 			var crumb = pathSplit[i]
 			breadcrumbStack.push(crumb)
-			breadcrumbs.push({ name: crumb == "" ? "Home" : crumb, path: breadcrumbStack.join("/") })
+			breadcrumbs.push({ name: crumb == "" ? "Home" : crumb, path: encodeURI(breadcrumbStack.join("/")) })
 		}
 		breadcrumbs[breadcrumbs.length - 1].last = true
 
