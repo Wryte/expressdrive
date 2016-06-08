@@ -15,11 +15,13 @@
 			<div id="content" class="content">
 				<div class="toolbar">
 					<div class="breadcrumbs">
-						<a href="#">Home</a>
-						<i class="fa fa-angle-right"></i>
-						<a href="#">sub folder</a>
-						<i class="fa fa-angle-right"></i>
-						<a href="#">inner folder</a>
+						{{#each breadcrumbs}}
+							<a href="{{../path}}/f{{this.path}}">{{this.name}}</a>
+							{{#if this.last}}
+							{{else}}
+								<i class="fa fa-angle-right"></i>
+							{{/if}}
+						{{/each}}
 					</div>
 					<div class="tool-container">
 						<i id="uploadButton" class="fa fa-upload fa-2x fa-fw"></i>

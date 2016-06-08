@@ -145,7 +145,8 @@ class ExpressDrive {
 					path: config.path,
 					user: req.user,
 					files: folderData.files,
-					stats: folderData.stats
+					stats: folderData.stats,
+					breadcrumbs: folderData.breadcrumbs
 				}))
 			}
 		)

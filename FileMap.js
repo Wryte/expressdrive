@@ -92,7 +92,19 @@ class FileMap {
 		}
 		stats = stats.join("")
 
-		return {files, stats}
+		// generate the breadcrumbs
+		var breadcrumbs = []
+		var pathSplit = path.split("/")
+		var breadcrumbStack = []
+
+		for (var i = 0; i < pathSplit.length; i++) {
+			var crumb = pathSplit[i]
+			breadcrumbStack.push(crumb)
+			breadcrumbs.push({ name: crumb == "" ? "Home" : crumb, path: breadcrumbStack.join("/") })
+		}
+		breadcrumbs[breadcrumbs.length - 1].last = true
+
+		return { files, stats, breadcrumbs }
 	}
 	getNewFileName(folder, filename, number) {
 		var fileSplit = filename.split(".")
