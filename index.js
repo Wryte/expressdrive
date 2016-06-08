@@ -180,15 +180,22 @@ class ExpressDrive {
 
 				var message = req.session.loginMessage
 				delete req.session.loginMessage
+				res.setHeader('Cache-Control', 'no-cache, no-store')
 				res.send(templates.main({ page: "login", path: config.path, message: message }))
 			}
 		)
 
 		this.app.post(config.path + "/login",
-			passport.authenticate("local", {
-				failureRedirect: config.path + "/login",
-				successRedirect: config.path
-			})
+			(req, res, next) => {
+				passport.authenticate('local', (err, user, info) => {
+					if (err) { return next(err); }
+					if (!user) { return res.redirect(config.path + '/login'); }
+					req.logIn(user, (err) => {
+						if (err) { return next(err); }
+						return res.redirect(req.body.oreq == "" ? config.path : req.body.oreq);
+					});
+				})(req, res, next);
+			}
 		)
 
 		this.app.get(config.path + "/logout",

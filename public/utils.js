@@ -21,6 +21,22 @@ function getCurrentPath() {
 	return path
 }
 
+function getSearchObj() {
+	var search = {}
+	var searchString = window.location.search
+
+	if (searchString !== "") {
+		searchString = searchString.substring(1) // remove the ?
+		var searchArray = searchString.split("&")
+		for (var i = 0; i < searchArray.length; i++) {
+			var itemSplit = searchArray[i].split("=")
+			search[itemSplit[0]] = itemSplit[1]
+		}
+	}
+
+	return search
+}
+
 function templateGetNode(name, props, parent) {
 	var div = document.createElement(parent || "div")
 	div.innerHTML = __templates[name + "Template"](props)

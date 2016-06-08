@@ -13,6 +13,7 @@
 			<label for="password">password</label>
 			<input id="passwordRaw" type="password" name="passwordRaw">
 			<input id="password" type="hidden" name="password">
+			<input id="oreq" type="hidden" name="oreq">
 		</form>
 		<div class="break"></div>
 		<button class="primary" type="submit" form="loginForm">Log In</button>
@@ -24,6 +25,7 @@
 	var username = document.getElementById("username")
 	var passwordRaw = document.getElementById("passwordRaw")
 	var password = document.getElementById("password")
+	var oreq = document.getElementById("oreq")
 
 	loginForm.onsubmit = function(e) {
 		var usernameValue = username.value
@@ -39,6 +41,9 @@
 
 		passwordRaw.value = ""
 		password.value = Sha256.hash(usernameValue + passwordRawValue)
+
+		var search = getSearchObj()
+		if (search.oreq) { oreq.value = search.oreq }
 	}
 
 	var messageCenter = document.getElementById("messageCenter")
