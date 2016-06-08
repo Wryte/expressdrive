@@ -234,7 +234,12 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/deleteFiles",
 			(req, res) => {
-				console.log("delete request", req.body.files)
+				var deletedFiles = this.fileMap.deleteFiles(req.body.files)
+
+				for (var i = 0; i < deletedFiles.length; i++) {
+					fs.unlink(path.join(appRoot.path, 'expressdrive', 'uploads', deletedFiles[i].nameOnDisk))
+				}
+
 				res.sendStatus(200)
 			}
 		)

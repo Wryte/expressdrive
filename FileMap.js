@@ -1,6 +1,7 @@
 "use strict"
 
 var moment = require("moment")
+var fs = require("fs")
 
 class FileMap {
 	constructor() {
@@ -152,6 +153,43 @@ class FileMap {
 			date_created: (new Date()).getTime(),
 			files: {}
 		}
+	}
+	deleteFiles(filePaths) {
+		var deletedFiles = []
+
+		for (var i = 0; i < filePaths.length; i++) {
+			var path = decodeURI(filePaths[i])
+			var pathSplit = path.split("/")
+			var filename = pathSplit[pathSplit.length - 1]
+			var folderPath = path.substring(0, path.length - filename.length)
+			var folder = this.getFileFromPath(folderPath)
+
+			if (folder && filename in folder.files) {
+				var file = folder.files[filename]
+				if (file.type == "folder") {
+					deletedFiles = deletedFiles.concat(this.getFilesInFolder(file))
+				} else {
+					deletedFiles.push(file)
+				}
+				delete folder.files[filename]
+			}
+		}
+
+		return deletedFiles
+	}
+	getFilesInFolder(folder) {
+		var files = []
+
+		for (var k in folder.files) {
+			var file = folder.files[k]
+			if (file.type == "folder") {
+				files = files.concat(this.getFilesInFolder(file))
+			} else {
+				files.push(file)
+			}
+		}
+
+		return files
 	}
 }
 
