@@ -199,6 +199,7 @@ class ExpressDrive {
 		this.app.post(config.path + "/login",
 			(req, res, next) => {
 				passport.authenticate('local', (err, user, info) => {
+					console.log("POST login", err, user, info)
 					if (err) { return next(err); }
 					if (!user) { return res.redirect(config.path + '/login'); }
 					req.logIn(user, (err) => {

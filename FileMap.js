@@ -220,9 +220,11 @@ class FileMap {
 		path = decodeURI(path)
 		var pathSplit = path.split("/")
 		var oldFilename = pathSplit[pathSplit.length - 1]
-		var folderPath = path.substring(0, path.length - oldFilename.length)
+		var folderPath = path.substring(0, path.length - oldFilename.length - 1)
 		var folder = this.getFileFromPath(folderPath)
 		var file = this.getFileFromPath(path)
+
+		console.log(oldFilename, folderPath, folder, file)
 
 		if (folder && file) {
 			delete folder.files[oldFilename]

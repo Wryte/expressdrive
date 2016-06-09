@@ -31,17 +31,38 @@
 						{{/each}}
 					</div>
 					<div class="tool-container">
-						<i id="uploadButton" class="fa fa-upload fa-2x fa-fw"></i>
-						<span id="createFolderPopupButton" class="fa-stack">
-							<i class="fa fa-folder-o fa-stack-2x fa-fw"></i>
-							<i class="fa fa-plus-circle fa-stack-1x"></i>
-						</span>
-						<i id="editPopupButton" class="fa fa-pencil fa-2x fa-fw disabled"></i>
-						<i id="deletePopupButton" class="fa fa-trash-o fa-2x fa-fw disabled"></i>
-						<span id="createFolderPopupButton" class="fa-stack disabled">
-							<i class="fa fa-file-o fa-stack-2x fa-fw"></i>
-							<i class="fa fa-arrow-circle-right fa-stack-1x"></i>
-						</span>
+						<div id="uploadButton" class="tool-button">
+							<span class="icon fa-stack">
+								<i class="fa fa-stack-2x fa-fw fa-upload"></i>
+							</span>
+							<p>Upload</p>
+						</div>
+						<div id="createFolderPopupButton" class="tool-button">
+							<span class="icon fa-stack">
+								<i class="fa fa-stack-2x fa-fw fa-folder-o"></i>
+								<i class="fa fa-stack-1x fa-fw fa-plus-circle"></i>
+							</span>
+							<p>Create Folder</p>
+						</div>
+						<div id="editPopupButton" class="tool-button disabled">
+							<span class="icon fa-stack">
+								<i class="fa fa-stack-2x fa-fw fa-pencil"></i>
+							</span>
+							<p>Edit</p>
+						</div>
+						<div id="moveItemsPopupButton" class="tool-button disabled">
+							<span class="icon fa-stack">
+								<i class="fa fa-stack-2x fa-fw fa-file-o"></i>
+								<i class="fa fa-stack-1x fa-fw fa-arrow-circle-right"></i>
+							</span>
+							<p>Move</p>
+						</div>
+						<div id="deletePopupButton" class="tool-button disabled">
+							<span class="icon fa-stack">
+								<i class="fa fa-stack-2x fa-fw fa-trash-o"></i>
+							</span>
+							<p>Delete</p>
+						</div>
 					</div>
 				</div>
 				<div class="break"></div>
