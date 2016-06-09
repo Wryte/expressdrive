@@ -12,14 +12,16 @@
 		<tr class="file-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
-				{{#ifCond this.type "==" "file"}}
-					 <i class="fa fa-file-text-o fa-fw"></i>
-				{{else}}
-					 <i class="fa fa-folder-o fa-fw"></i>
-				{{/ifCond}}
-				<a class="text" href="{{../path}}/f{{this.uri}}" {{#ifCond this.type "==" "file"}} target="_blank" {{/ifCond}}>
-					<p>{{this.filename}}</p>
-					<p class="sub">{{this.time}}</p>
+				<a href="{{../path}}/f{{this.uri}}" {{#ifCond this.type "==" "file"}} target="_blank" {{/ifCond}}>
+					{{#ifCond this.type "==" "file"}}
+						 <i class="fa fa-file-text-o fa-fw"></i>
+					{{else}}
+						 <i class="fa fa-folder-o fa-fw"></i>
+					{{/ifCond}}
+					<div>
+						<p>{{this.filename}}</p>
+						<p class="sub">{{this.time}}</p>
+					</div>
 				</a>
 			</td>
 			<td>{{this.created_by}}</td>

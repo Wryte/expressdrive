@@ -314,25 +314,23 @@ label.button.primary {
 }
 
 td.description-td {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
 	padding: 3px 5px;
 }
-
-.description-td .text {
-	flex-grow: 1;
+.description-td > a {
+	display: flex;
 	padding: 4px 0;
-	padding-left: 10px;
+	flex-direction: row;
+	align-items: center;
 	border-radius: 2px;
 	transition: background-color 0.5s;
 }
-.description-td .text:hover {
+.description-td > a:hover {
 	background-color: #eee;
 }
 
-.description-td > i {
+.description-td .fa {
 	font-size: 1.5em;
+	margin-right: 10px;
 	color: hsl(38,29%,58%);
 }
 

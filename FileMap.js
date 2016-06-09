@@ -224,8 +224,6 @@ class FileMap {
 		var folder = this.getFileFromPath(folderPath)
 		var file = this.getFileFromPath(path)
 
-		console.log(oldFilename, folderPath, folder, file)
-
 		if (folder && file) {
 			delete folder.files[oldFilename]
 			folder.files[name] = file
