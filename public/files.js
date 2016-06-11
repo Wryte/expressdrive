@@ -1,146 +1,66 @@
 document.addEventListener("DOMContentLoaded", function() {
-	// dynamic loading of the file table
-	var fileTableContainer = document.getElementById("fileTableContainer")
-
-	function reloadFileTable() {
-		var xhr = new XMLHttpRequest()
-		xhr.open("GET", __path + "/fileTable" + getCurrentPath())
-
-		xhr.onload = function(data) {
-			if (xhr.status == 200) {
-				fileTableContainer.innerHTML = xhr.responseText
-			}
-		}
-
-		xhr.send()
-	}
-
 	// setup popups
 	var shade = document.getElementById("shade")
 
 	var uploadButton = document.getElementById("uploadButton")
 	var uploadPopup = document.getElementById("uploadPopup")
+	var	uploadInput = document.getElementById("uploadInput")
+	var	uploadItemsContainer = document.getElementById("uploadItemsContainer")
 
 	var createFolderPopupButton = document.getElementById("createFolderPopupButton")
 	var createFolderPopup = document.getElementById("createFolderPopup")
+	var folderNameInput = document.getElementById("folderNameInput")
+	var createFolderButton = document.getElementById("createFolderButton")
 
 	var editPopupButton = document.getElementById("editPopupButton")
 	var editPopup = document.getElementById("editPopup")
+	var filenameInput = document.getElementById("filenameInput")
+	var editButton = document.getElementById("editButton")
 
 	var deletePopupButton = document.getElementById("deletePopupButton")
 	var deletePopup = document.getElementById("deletePopup")
+	var deleteButton = document.getElementById("deleteButton")
 
 	var closeShade
 
-	function generatePopupTL(popup) {
-		var tl = new TimelineMax({
-			onStart: function() {
-				shade.style.display = "flex"
-				popup.style.display = "block"
-			},
-			onReverseComplete: function() {
-				shade.style.display = "none"
-				popup.style.display = "none"
-				shade.removeEventListener("click", closeShade)
-				tl.clear()
-			}
-		})
-
-		closeShade = function(e) {
-			if (e == undefined || (e.target.dataset.closePopup && tl.progress() == 1)) {
-				tl.reverse()
-				closeShade = undefined
-			}
-		}
-
-		tl.fromTo(shade, 0.2, { opacity: 0 }, { opacity: 1 })
-		tl.fromTo(popup, 0.35, { opacity: 0, y: -75 }, { opacity: 1, y: 0 })
-
-		shade.addEventListener("click", closeShade)
-	}
-
-	function setFolderName() {
-		var spans = document.querySelectorAll(".folder-name")
-		spans.forEach(function(span) {
-			span.innerText = getCurrentFolder()
-		})
-	}
-
+	// bind buttons in tray
 	uploadButton.onclick = function() {
 		setFolderName()
-		generatePopupTL(uploadPopup)
+		closeShade = generatePopupTL(uploadPopup, shade)
 	}
+
 	createFolderPopupButton.onclick = function() {
 		setFolderName()
-		generatePopupTL(createFolderPopup)
+		closeShade = generatePopupTL(createFolderPopup, shade)
 	}
+
 	deletePopupButton.onclick = function() {
 		setFolderName()
 		var selected = getSelected()
 		if (selected.length > 0) {
 			document.getElementById("deleteHeaderSpan").innerText = selected.length + " item" + (selected.length > 1 ? "s" : "")
 			document.getElementById("deleteBodySpan").innerText = selected.length > 1 ? "these items" : "this item"
-			generatePopupTL(deletePopup)
+			closeShade = generatePopupTL(deletePopup, shade)
 		}
 	}
+
 	editPopupButton.onclick = function() {
 		var selected = getSelected()
 		if (selected.length == 1) {
 			document.getElementById("editHeaderSpan").innerText = selected[0].dataset.filename
 			filenameInput.value = selected[0].dataset.filename
-			generatePopupTL(editPopup)
+			closeShade = generatePopupTL(editPopup, shade)
 		}
 	}
 
-	// upload popup
-	var	uploadInput = document.getElementById("uploadInput")
-	var	uploadItemsContainer = document.getElementById("uploadItemsContainer")
-
-	function uploadFile(file) {
-		var item = templateGetNode("uploadItem", { name: file.name, size: toMB(file.size) })
-		var bar = item.querySelector(".bar")
-		var progress = item.querySelector(".progress")
-		var check = item.querySelector(".complete")
-
-		uploadItemsContainer.insertBefore(item, uploadItemsContainer.firstChild)
-		TweenMax.from(item, 0.2, { opacity: 0, height: 0 })
-
-		var formData = new FormData()
-		formData.append('file', file, file.name)
-
-		var xhr = new XMLHttpRequest()
-		xhr.open('POST', __path + "/upload?target="+getCurrentPath(), true)
-
-		xhr.upload.addEventListener("progress", function(e) {
-			if (e.lengthComputable) {
-				TweenMax.to(bar, 0.2, { width: (e.loaded / e.total * 100) + "%" })
-			}
-		})
-
-		xhr.onload = function () {
-			if (xhr.status === 200) {
-				var tl = new TimelineMax()
-				tl.to(progress, 0.2, { opacity: 0, delay: 0.5 })
-				tl.fromTo(check, 0.2, { opacity: 0, x: -20 }, { opacity: 1, x: 0 })
-				reloadFileTable()
-			} else {
-				alert('An error occurred!')
-			}
-		}
-
-		setTimeout(function() { xhr.send(formData) }, 0.2)
-	}
-
+	// upload popup events
 	uploadInput.onchange = function(e) {
 		for (var i = 0; i < uploadInput.files.length; i++) {
-			uploadFile(uploadInput.files[i])
+			uploadFile(uploadInput.files[i], uploadItemsContainer)
 		}
 	}
 
-	// create folder popup
-	var folderNameInput = document.getElementById("folderNameInput")
-	var createFolderButton = document.getElementById("createFolderButton")
-
+	// create folder popup events
 	folderNameInput.onkeyup = function(e) {
 		if (e.keyCode == 13) { createFolder() }
 		var sanitizedName = sanitizeFileName(this.value)
@@ -172,8 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
-	// delete popup
-	var deleteButton = document.getElementById("deleteButton")
+	// delete popup events
 	deleteButton.onclick = deleteFiles
 
 	function deleteFiles() {
@@ -199,10 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		xhr.send(JSON.stringify({ files: deleteFiles }))
 	}
 
-	// edit popup
-	var filenameInput = document.getElementById("filenameInput")
-	var editButton = document.getElementById("editButton")
-
+	// edit popup events
 	editButton.onclick = editFile
 	filenameInput.onkeyup = function(e) {
 		if (e.keyCode == 13) { editFile() }
