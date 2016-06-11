@@ -59,13 +59,23 @@ document.addEventListener("DOMContentLoaded", function() {
 		shade.addEventListener("click", closeShade)
 	}
 
+	function setFolderName() {
+		var spans = document.querySelectorAll(".folder-name")
+		spans.forEach(function(span) {
+			span.innerText = getCurrentFolder()
+		})
+	}
+
 	uploadButton.onclick = function() {
+		setFolderName()
 		generatePopupTL(uploadPopup)
 	}
 	createFolderPopupButton.onclick = function() {
+		setFolderName()
 		generatePopupTL(createFolderPopup)
 	}
 	deletePopupButton.onclick = function() {
+		setFolderName()
 		var selected = getSelected()
 		if (selected.length > 0) {
 			document.getElementById("deleteHeaderSpan").innerText = selected.length + " item" + (selected.length > 1 ? "s" : "")
@@ -319,8 +329,10 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 
 		if (selected.length == fileElements.length) {
-			addClass(selectAllIcon, "selected")
-			selectOnTL(selectAllIcon)
+			if (!hasClass(selectAllIcon, "selected")) {
+				addClass(selectAllIcon, "selected")
+				selectOnTL(selectAllIcon)
+			}
 		} else if (hasClass(selectAllIcon, "selected")) {
 			removeClass(selectAllIcon, "selected")
 			selectOffTL(selectAllIcon)

@@ -21,6 +21,17 @@ function getCurrentPath() {
 	return path
 }
 
+function getCurrentFolder() {
+	var pathSplit = decodeURI(getCurrentPath()).split("/")
+	var folder = pathSplit[pathSplit.length - 1]
+
+	if (folder == "") {
+		folder = "Home"
+	}
+
+	return folder
+}
+
 function getSearchObj() {
 	var search = {}
 	var searchString = window.location.search
