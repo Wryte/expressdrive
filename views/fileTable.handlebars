@@ -1,5 +1,5 @@
 {{#if files}}
-<table class="file-table">
+<table id="fileTable" class="file-table">
 	<thead>
 		<tr>
 			<th class="shrink text-center select-all-td"><i class="fa fa-circle-o"></i></th>
@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{{#each files}}
-		<tr class="file-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}">
+		<tr class="item-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
 				<a href="{{../path}}/f{{this.uri}}" {{#ifCond this.type "==" "file"}} target="_blank" {{/ifCond}}>

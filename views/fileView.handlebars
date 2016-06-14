@@ -1,84 +1,59 @@
-<div class="file-page">
-	<div class="top-bar">
-		<div class="inner">
-			<div class="container">
-				<img class="logo" src="http://thunderbayurc.com/images/logo.png">
-				<p>URC Thunder Bay</p>
-			</div>
-			<div class="container">
-				<a class="sign-out" href="{{path}}/logout">{{user.username}} <i class="fa fa-sign-out"></i></a>
-			</div>
-		</div>
+
+{{#if badRequest}}
+<div class="bad-request">
+	<i class="fa fa-exclamation-triangle"></i>
+	<p>Oops! The file or folder you requested does not exist.</p>
+	<p><a class="button primary" href="{{path}}">Go to the home folder</a></p>
+</div>
+{{else}}
+<div class="toolbar">
+	<div class="breadcrumbs">
+		{{#each breadcrumbs}}
+			<a href="{{../path}}/f{{this.path}}">{{this.name}}</a>
+			{{#if this.last}}
+			{{else}}
+				<i class="fa fa-angle-right"></i>
+			{{/if}}
+		{{/each}}
 	</div>
-	<div class="main">
-		<div class="inner">
-			<div class="content">
-				{{#if badRequest}}
-				<div class="bad-request">
-					<i class="fa fa-exclamation-triangle"></i>
-					<p>Oops! The file or folder you requested does not exist.</p>
-					<p><a class="button primary" href="{{path}}">Go to the home folder</a></p>
-				</div>
-				{{else}}
-				<div class="toolbar">
-					<div class="breadcrumbs">
-						{{#each breadcrumbs}}
-							<a href="{{../path}}/f{{this.path}}">{{this.name}}</a>
-							{{#if this.last}}
-							{{else}}
-								<i class="fa fa-angle-right"></i>
-							{{/if}}
-						{{/each}}
-					</div>
-					<div class="tool-container">
-						<div id="uploadButton" class="tool-button">
-							<span class="icon fa-stack">
-								<i class="fa fa-stack-2x fa-fw fa-upload"></i>
-							</span>
-							<p>Upload</p>
-						</div>
-						<div id="createFolderPopupButton" class="tool-button">
-							<span class="icon fa-stack">
-								<i class="fa fa-stack-2x fa-fw fa-folder-o"></i>
-								<i class="fa fa-stack-1x fa-fw fa-plus-circle"></i>
-							</span>
-							<p>Create Folder</p>
-						</div>
-						<div id="editPopupButton" class="tool-button disabled">
-							<span class="icon fa-stack">
-								<i class="fa fa-stack-2x fa-fw fa-pencil"></i>
-							</span>
-							<p>Edit</p>
-						</div>
-						<!-- <div id="moveItemsPopupButton" class="tool-button disabled">
-							<span class="icon fa-stack">
-								<i class="fa fa-stack-2x fa-fw fa-file-o"></i>
-								<i class="fa fa-stack-1x fa-fw fa-arrow-circle-right"></i>
-							</span>
-							<p>Move</p>
-						</div> -->
-						<div id="deletePopupButton" class="tool-button disabled">
-							<span class="icon fa-stack">
-								<i class="fa fa-stack-2x fa-fw fa-trash-o"></i>
-							</span>
-							<p>Delete</p>
-						</div>
-					</div>
-				</div>
-				<div class="break"></div>
-				<div id="fileTableContainer">
-					{{> fileTable }}
-				</div>
-				{{/if}}
-			</div>
+	<div class="tool-container">
+		<div id="uploadButton" class="tool-button">
+			<span class="icon fa-stack">
+				<i class="fa fa-stack-2x fa-fw fa-upload"></i>
+			</span>
+			<p>Upload</p>
 		</div>
-	</div>
-	<div id="shade" class="shade" data-close-popup=true>
-		{{> uploadPopup }}
-		{{> createFolderPopup }}
-		{{> deletePopup }}
-		{{> editPopup }}
+		<div id="createFolderPopupButton" class="tool-button">
+			<span class="icon fa-stack">
+				<i class="fa fa-stack-2x fa-fw fa-folder"></i>
+			</span>
+			<p>Create Folder</p>
+		</div>
+		<div id="editPopupButton" class="tool-button disabled">
+			<span class="icon fa-stack">
+				<i class="fa fa-stack-2x fa-fw fa-pencil"></i>
+			</span>
+			<p>Edit</p>
+		</div>
+		<!-- <div id="moveItemsPopupButton" class="tool-button disabled">
+			<span class="icon fa-stack">
+				<i class="fa fa-stack-2x fa-fw fa-file-o"></i>
+				<i class="fa fa-stack-1x fa-fw fa-arrow-circle-right"></i>
+			</span>
+			<p>Move</p>
+		</div> -->
+		<div id="deletePopupButton" class="tool-button disabled">
+			<span class="icon fa-stack">
+				<i class="fa fa-stack-2x fa-fw fa-trash-o"></i>
+			</span>
+			<p>Delete</p>
+		</div>
 	</div>
 </div>
+<div class="break"></div>
+<div id="fileTableContainer">
+	{{> fileTable }}
+</div>
+{{/if}}
 
 <script type="text/javascript" src="/expressdrive/files.js"></script>

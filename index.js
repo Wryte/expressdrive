@@ -86,6 +86,9 @@ class ExpressDrive {
 			deleteFiles: true,
 			editFile: true
 		}
+		this.adminRestrictedPaths = {
+			admin: true
+		}
 		this.fileMap = new FileMap({ saveDestination: appRoot + "/expressdrive/files.json"})
 
 		this.init()
@@ -125,8 +128,14 @@ class ExpressDrive {
 					// reload templates with each request (TODO dev only)
 					loadTemplates(() => {
 						var urlComponents = req.originalUrl.substring(config.path.length).split("/")
-						if (!req.user && this.restrictedPaths[urlComponents[1]]) {
+						var userRestriced = this.restrictedPaths[urlComponents[1]]
+						var adminRestricted = this.adminRestrictedPaths[urlComponents[1]]
+						
+						if (!req.user && (userRestriced || adminRestricted)) {
 							return res.redirect(config.path + "/login?oreq=" + req.originalUrl)
+						}
+						if (req.user && !req.user.admin && adminRestricted) {
+							return res.sendStatus(403)
 						}
 						next()
 					})
@@ -145,7 +154,8 @@ class ExpressDrive {
 
 				if (file == undefined) {
 					return res.send(templates.main({
-						page: "fileView",
+						page: "loggedIn",
+						view: "fileView",
 						path: config.path,
 						badRequest: true,
 						user: req.user
@@ -158,7 +168,8 @@ class ExpressDrive {
 					res.setHeader('Cache-Control', 'no-cache, no-store')
 					res.setHeader('Content-Type', 'text/html')
 					res.send(templates.main({
-						page: "fileView",
+						page: "loggedIn",
+						view: "fileView",
 						path: config.path,
 						user: req.user,
 						files: folderData.files,
@@ -249,6 +260,18 @@ class ExpressDrive {
 			(req, res) => {
 				this.fileMap.editFile(req.body.name, req.body.filePath)
 				res.sendStatus(200)
+			}
+		)
+
+		// administration
+		this.app.get(config.path + "/admin",
+			(req, res) => {
+				res.send(templates.main({
+					page: "loggedIn",
+					view: "adminView",
+					user: req.user,
+					path: config.path
+				}))
 			}
 		)
 

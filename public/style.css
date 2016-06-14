@@ -23,6 +23,8 @@ html, body {
 
 .text-center { text-align: center !important; }
 .flex-grow { flex-grow: 1; }
+.color-red { color: hsl(0,39%,58%); }
+.color-green { color: #75B37A; }
 
 a {
 	text-decoration: none;
@@ -204,6 +206,24 @@ label.button.primary {
 	margin-left: 5px;
 }
 
+.navigation {
+	display: flex;
+	justify-content: center;
+	background-color: #aaa;
+	font-size: 0.9em;
+	color: white;
+}
+
+.navigation a {
+	padding: 0px 10px;
+	margin: 5px 0;
+	border-right: 1px solid #888;
+}
+
+.navigation a:last-child {
+	border-right: none;
+}
+
 .content {
 	position: relative;
 	background-color: white;
@@ -222,14 +242,16 @@ label.button.primary {
 .breadcrumbs {
 	font-size: 0.8em;
 	line-height: 1.5em;
+	color: hsl(38,29%,58%);
 }
-.breadcrumbs a,
-.breadcrumbs i {
-	margin-right: 5px;
-}
+
 .breadcrumbs a {
 	display: inline-block;
-	color: hsl(38,29%,58%);
+	margin-right: 5px;
+}
+.breadcrumbs i {
+	color: #333;
+	margin-right: 5px;
 }
 
 .tool-container {
@@ -316,7 +338,8 @@ label.button.primary {
 td.description-td {
 	padding: 3px 5px;
 }
-.description-td > a {
+.description-td > a,
+.description-td .user-container {
 	display: flex;
 	padding: 4px 0;
 	flex-direction: row;

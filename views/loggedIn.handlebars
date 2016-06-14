@@ -1,0 +1,32 @@
+<div class="file-page">
+	<div class="top-bar">
+		<div class="inner">
+			<div class="container">
+				<img class="logo" src="http://thunderbayurc.com/images/logo.png">
+				<p>URC Thunder Bay</p>
+			</div>
+			<div class="container">
+				<a class="sign-out" href="{{path}}/logout">{{user.username}} <i class="fa fa-sign-out"></i></a>
+			</div>
+		</div>
+	</div>
+	{{#if user.admin}}
+	<div class="navigation">
+		<a href="{{path}}/admin"><i class="fa fa-lock fa-fw"></i> Administration</a>
+		<a href="{{path}}"><i class="fa fa-folder fa-fw"></i> Files</a>
+	</div>
+	{{/if}}
+	<div class="main">
+		<div class="inner">
+			<div class="content">
+				{{> (lookup . 'view')}}
+			</div>
+		</div>
+	</div>
+	<div id="shade" class="shade" data-close-popup=true>
+		{{> uploadPopup }}
+		{{> createFolderPopup }}
+		{{> deletePopup }}
+		{{> editPopup }}
+	</div>
+</div>
