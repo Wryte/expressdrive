@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{{#each users}}
-		<tr class="item-element">
+		<tr class="item-element" data-username="{{this.username}}" data-permission="{{this.permission}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
 				<div class="user-container">

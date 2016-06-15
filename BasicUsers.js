@@ -83,10 +83,14 @@ class BasicUsers {
 			this.save()
 		}
 	}
-	deleteUser(username) {
-		if (username !== this.adminUsername) {
-			delete this.users[username]
-			this.save()
+	deleteUsers(usernames) {
+		for (var i = 0; i < usernames.length; i++) {
+			var username = usernames[i]
+			
+			if (username !== this.adminUsername) {
+				delete this.users[username]
+				this.save()
+			}
 		}
 	}
 }

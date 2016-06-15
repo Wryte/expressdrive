@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
 	function reloadUserTable() {
-		var userTableContainer = document.getElementById("userTableContainer")
+		var userTableContainer = document.getElementById("usersTableContainer")
 		var xhr = new XMLHttpRequest()
 		xhr.open("GET", __path + "/userTable")
 
@@ -17,13 +17,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	var createUserPopupButton = document.getElementById("createUserPopupButton")
 	var createUserPopup = document.getElementById("createUserPopup")
-	var usernameInput = document.getElementById("usernameInput")
-	var passwordInput = document.getElementById("passwordInput")
-	var passwordRepeatInput = document.getElementById("passwordRepeatInput")
-	var permissionSelect = document.getElementById("permissionSelect")
+	var usernameInputCU = document.getElementById("usernameInputCU")
+	var passwordInputCU = document.getElementById("passwordInputCU")
+	var passwordRepeatInputCU = document.getElementById("passwordRepeatInputCU")
+	var permissionSelectCU = document.getElementById("permissionSelectCU")
 	var createUserButton = document.getElementById("createUserButton")
 
 	var editUserPopupButton = document.getElementById("editUserPopupButton")
+	var editUserPopup = document.getElementById("editUserPopup")
+	var editUserHeaderSpan = document.getElementById("editUserHeaderSpan")
+	var usernameInputEU = document.getElementById("usernameInputEU")
+	var passwordInputEU = document.getElementById("passwordInputEU")
+	var passwordRepeatInputEU = document.getElementById("passwordRepeatInputEU")
+	var permissionSelectEU = document.getElementById("permissionSelectEU")
+	var editUserButton = document.getElementById("editUserButton")
 
 	var deleteUserPopupButton = document.getElementById("deleteUserPopupButton")
 
@@ -34,32 +41,42 @@ document.addEventListener("DOMContentLoaded", function() {
 		closeShade = generatePopupTL(createUserPopup, shade)
 	}
 
+	editUserPopupButton.onclick = function() {
+		var selected = selectTable.getSelected()
+		if (selected.length == 1) {
+			editUserHeaderSpan.innerText = selected[0].dataset.username
+			usernameInputEU.value = selected[0].dataset.username
+			permissionSelectEU.value = selected[0].dataset.permission
+			closeShade = generatePopupTL(editUserPopup, shade)
+		}
+	}
+
 	// createUser events
-	usernameInput.onkeyup = sanitizeKeyUp
+	usernameInputCU.onkeyup = sanitizeKeyUp
 
 	createUserButton.onclick = function() {
-		var username = usernameInput.value
-		var password = passwordInput.value
-		var passwordRepeat = passwordRepeatInput.value
-		var permission = permissionSelect.value
+		var username = usernameInputCU.value
+		var password = passwordInputCU.value
+		var passwordRepeat = passwordRepeatInputCU.value
+		var permission = permissionSelectCU.value
 		var clean = true
 
-		removeClass([usernameInput, passwordInput, passwordRepeatInput], "bad-input")
+		removeClass([usernameInputCU, passwordInputCU, passwordRepeatInputCU], "bad-input")
 
 		if (username == "") {
-			addClass(usernameInput, "bad-input")
+			addClass(usernameInputCU, "bad-input")
 			clean = false
 		}
 		if (password == "") {
-			addClass(passwordInput, "bad-input")
+			addClass(passwordInputCU, "bad-input")
 			clean = false
 		}
 		if (passwordRepeat == "") {
-			addClass(passwordRepeatInput, "bad-input")
+			addClass(passwordRepeatInputCU, "bad-input")
 			clean = false
 		}
 		if (passwordRepeat !== password) {
-			addClass(passwordRepeatInput, "bad-input")
+			addClass(passwordRepeatInputCU, "bad-input")
 			clean = false
 		}
 
@@ -72,6 +89,10 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.onload = function(e) {
 				if (xhr.status == 200) {
 					if (closeShade) { closeShade() }
+					usernameInputCU.value = ""
+					passwordInputCU.value = ""
+					passwordRepeatInputCU.value = ""
+					permissionSelectCU.value = "read-only"
 					reloadUserTable()
 				}
 			}
@@ -81,6 +102,60 @@ document.addEventListener("DOMContentLoaded", function() {
 				password: Sha256.hash(username + password),
 				permission: permission
 			}))
+		}
+	}
+
+	editUserButton.onclick = function() {
+		var selected = selectTable.getSelected()
+		var oldUsername = selected[0].dataset.username
+		var oldPermission = selected[0].dataset.permission
+		var username = usernameInputEU.value
+		var password = passwordInputEU.value
+		var passwordRepeat = passwordRepeatInputEU.value
+		var permission = permissionSelectEU.value
+		var clean = true
+
+		removeClass([usernameInputEU, passwordInputEU, passwordRepeatInputEU], "bad-input")
+
+		if (username == "") {
+			addClass(usernameInputEU, "bad-input")
+			clean = false
+		}
+		if (passwordRepeat !== password) {
+			addClass(passwordRepeatInputEU, "bad-input")
+			clean = false
+		}
+
+		if (username == oldUsername && passwordRepeat == "" && password == "" && permission == oldPermission) {
+			if (closeShade) { closeShade() }
+		} else if (clean) {
+			var xhr = new XMLHttpRequest()
+
+			xhr.open("POST", __path + "/editUser")
+			xhr.setRequestHeader("Content-type", "application/json");
+
+			xhr.onload = function(e) {
+				if (xhr.status == 200) {
+					if (closeShade) { closeShade() }
+					usernameInputEU.value = ""
+					passwordInputEU.value = ""
+					passwordRepeatInputEU.value = ""
+					permissionSelectEU.value = "read-only"
+					reloadUserTable()
+				}
+			}
+
+			var data = {
+				oldUsername: oldUsername,
+				username: username,
+				permission: permission
+			}
+
+			if (password !== "") {
+				data.password = Sha256.hash(username + password)
+			}
+
+			xhr.send(JSON.stringify(data))
 		}
 	}
 

@@ -1,0 +1,21 @@
+<div id="editUserPopup" class="popup edit-popup">
+	<div class="header">Edit user '<span id="editUserHeaderSpan"></span>'</div>
+	<div class="body">
+		<label>Username</label>
+		<input id="usernameInputEU" type="text">
+		<label>Password</label>
+		<input id="passwordInputEU" type="password">
+		<label>Repeat Password</label>
+		<input id="passwordRepeatInputEU" type="password">
+		<label>Permission</label>
+		<select id="permissionSelectEU">
+			<option value="read-only">Read-Only</option>
+			<option value="edit">Edit</option>
+			<option value="admin">Admin</option>
+		</select>
+	</div>
+	<div class="footer">
+		<button id="editUserButton" class="primary">Save</button>
+		<button data-close-popup=true>Cancel</button>
+	</div>
+</div>

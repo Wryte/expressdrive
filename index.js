@@ -62,8 +62,8 @@ passport.use(new LocalStrategy(
 			return done(null, false)
 		}
 		done(null, {
-			admin: user.admin,
-			username: user.username
+			username: user.username,
+			permission: user.permission
 		})
 	}
 ))
@@ -305,9 +305,9 @@ class ExpressDrive {
 			}
 		)
 
-		this.app.post(config.path + "/deleteUser",
+		this.app.post(config.path + "/deleteUsers",
 			(req, res) => {
-				basicUsers.deleteUser(req.body.username)
+				basicUsers.deleteUsers(req.body.usernames)
 				res.sendStatus(200)
 			}
 		)
@@ -318,7 +318,7 @@ class ExpressDrive {
 				console.error(err.stack);
 				res.status(500).send('Something broke!');
 			}
-		);
+		)
 	}
 }
 
