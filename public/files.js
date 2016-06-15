@@ -21,6 +21,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	var deletePopup = document.getElementById("deletePopup")
 	var deleteButton = document.getElementById("deleteButton")
 
+	var moveItemsPopupButton = document.getElementById("moveItemsPopupButton")
+	var moveItemsPopup = document.getElementById("moveItemsPopup")
+	var moveItemsHeaderSpan = document.getElementById("moveItemsHeaderSpan")
+	var moveButton = document.getElementById("moveButton")
+	var folderViewElement = document.getElementById("folderViewElement")
+	var folderView = new FolderView(folderViewElement)
+
 	var closeShade
 
 	// bind buttons in tray
@@ -66,6 +73,29 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
+	moveItemsPopupButton.onclick = function() {
+		var selected = selectTable.getSelected()
+
+		if (selected.length > 0) {
+			moveItemsHeaderSpan.innerText = selected.length > 1 ? selected.length + " Items" : "'" + selected[0].dataset.filename + "'"
+
+			var xhr = new XMLHttpRequest()
+
+			xhr.open("GET", __path + "/getFolders")
+			xhr.responseType = "json"
+
+			xhr.onload = function(e) {
+				if (xhr.status == 200) {
+					folders = xhr.response
+					folderView.setFolders(folders)
+					closeShade = generatePopupTL(moveItemsPopup, shade)
+				}
+			}
+
+			xhr.send()
+		}
+	}
+
 	// upload popup events
 	uploadInput.onchange = function(e) {
 		for (var i = 0; i < uploadInput.files.length; i++) {
@@ -96,32 +126,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			xhr.send(JSON.stringify({ name: folderName, target: getCurrentPath() }))
 		}
-	}
-
-	// delete popup events
-	deleteButton.onclick = deleteFiles
-
-	function deleteFiles() {
-		var selected = selectTable.getSelected()
-		var deleteFiles = []
-
-		for (var i = 0; i < selected.length; i++) {
-			deleteFiles.push(selected[i].dataset.uri)
-		}
-
-		var xhr = new XMLHttpRequest()
-
-		xhr.open("POST", __path + "/deleteFiles")
-		xhr.setRequestHeader("Content-type", "application/json");
-
-		xhr.onload = function(e) {
-			if (xhr.status == 200) {
-				if (closeShade) { closeShade() }
-				reloadFileTable()
-			}
-		}
-
-		xhr.send(JSON.stringify({ files: deleteFiles }))
 	}
 
 	// edit popup events
@@ -158,17 +162,74 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
+	// moveItems popup events
+	moveButton.onclick = function() {
+		if (folderView.selectedFolder) {
+			var selected = selectTable.getSelected()
+			var files = []
+
+			for (var i = 0; i < selected.length; i++) {
+				files.push(selected[i].dataset.uri)
+			}
+
+			var xhr = new XMLHttpRequest()
+
+			xhr.open("POST", __path + "/moveFiles")
+			xhr.setRequestHeader("Content-type", "application/json");
+
+			xhr.onload = function(e) {
+				if (xhr.status == 200) {
+					if (closeShade) { closeShade() }
+					reloadFileTable()
+				}
+			}
+
+			xhr.send(JSON.stringify({
+				files: files,
+				target: folderView.selectedFolder.path
+			}))
+		}
+	}
+
+	// delete popup events
+	deleteButton.onclick = deleteFiles
+
+	function deleteFiles() {
+		var selected = selectTable.getSelected()
+		var deleteFiles = []
+
+		for (var i = 0; i < selected.length; i++) {
+			deleteFiles.push(selected[i].dataset.uri)
+		}
+
+		var xhr = new XMLHttpRequest()
+
+		xhr.open("POST", __path + "/deleteFiles")
+		xhr.setRequestHeader("Content-type", "application/json");
+
+		xhr.onload = function(e) {
+			if (xhr.status == 200) {
+				if (closeShade) { closeShade() }
+				reloadFileTable()
+			}
+		}
+
+		xhr.send(JSON.stringify({ files: deleteFiles }))
+	}
+
 	// file selection
 	function updateSelection(selected) {
 		var selected = selectTable.getSelected()
 
 		if (selected.length == 0) {
 			addClass(editPopupButton, "disabled")
+			addClass(moveItemsPopupButton, "disabled")
 			addClass(deletePopupButton, "disabled")
 		}
 		if (selected.length >= 1) {
-			removeClass(deletePopupButton, "disabled")
 			removeClass(editPopupButton, "disabled")
+			removeClass(moveItemsPopupButton, "disabled")
+			removeClass(deletePopupButton, "disabled")
 		}
 		if (selected.length > 1) {
 			addClass(editPopupButton, "disabled")

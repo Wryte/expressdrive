@@ -438,8 +438,13 @@ td.description-td {
 	font-size: 0.8em;
 }
 
-.upload-popup .body {
+.upload-popup .body,
+.move-popup .body {
 	height: 250px;
+}
+
+.move-popup .body {
+	padding: 10px;
 }
 
 .upload-item {
@@ -574,4 +579,40 @@ td.description-td {
 .filename-container span {
 	flex-shrink: 0;
 	padding: 5px;
+}
+
+.folder-item {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	border-radius: 2px;
+}
+.folder-item.selected {
+	background-color: hsl(38,39%,88%);
+}
+
+.folder-item .fa-folder-o {
+	color: hsl(38,39%,58%);
+	margin-right: 5px;
+}
+
+.folder-item .expand-toggle {
+	cursor: pointer;
+	color: #999;
+	padding: 3px;
+	margin: 2px 5px;
+	margin-left: 0px;
+	border-radius: 2px;
+	transition: background-color 0.5s;
+}
+
+.folder-item .expand-toggle:hover {
+	background-color: #ddd;
+}
+
+.folder-item .filename {
+	cursor: pointer;
+}
+.folder-item .filename:hover {
+	text-decoration: underline;
 }

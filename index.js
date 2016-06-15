@@ -84,8 +84,10 @@ class ExpressDrive {
 			upload: true,
 			createFolder: true,
 			fileTable: true,
+			editFile: true,
+			moveFiles: true,
 			deleteFiles: true,
-			editFile: true
+			getFolders: true
 		}
 		this.adminRestrictedPaths = {
 			admin: true,
@@ -249,6 +251,20 @@ class ExpressDrive {
 			}
 		)
 
+		this.app.post(config.path + "/editFile",
+			(req, res) => {
+				this.fileMap.editFile(req.body.name, req.body.filePath)
+				res.sendStatus(200)
+			}
+		)
+
+		this.app.post(config.path + "/moveFiles",
+			(req, res) => {
+				this.fileMap.moveFiles(req.body.files, req.body.target)
+				res.sendStatus(200)
+			}
+		)
+
 		this.app.post(config.path + "/deleteFiles",
 			(req, res) => {
 				var deletedFiles = this.fileMap.deleteFiles(req.body.files)
@@ -261,10 +277,9 @@ class ExpressDrive {
 			}
 		)
 
-		this.app.post(config.path + "/editFile",
+		this.app.get(config.path + "/getFolders",
 			(req, res) => {
-				this.fileMap.editFile(req.body.name, req.body.filePath)
-				res.sendStatus(200)
+				res.send(this.fileMap.getFolders())
 			}
 		)
 

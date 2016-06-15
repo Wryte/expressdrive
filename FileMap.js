@@ -222,6 +222,7 @@ class FileMap {
 		return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
 	}
 	editFile(name, path) {
+		name = this.sanitizeFilename(name)
 		path = decodeURI(path)
 		var pathSplit = path.split("/")
 		var oldFilename = pathSplit[pathSplit.length - 1]
@@ -231,11 +232,80 @@ class FileMap {
 
 		if (folder && file) {
 			delete folder.files[oldFilename]
+
+			if (name in folder.files) {
+				name = this.getNewFileName(folder, name, 2)
+			}
+			
 			folder.files[name] = file
 			file.filename = name
 		}
 
 		this.save()
+	}
+	moveFiles(files, target) {
+		var targetFolder = this.getFileFromPath(target)
+
+		if (targetFolder) {
+			for (var i = 0; i < files.length; i++) {
+				var path = decodeURI(files[i])
+				var pathSplit = path.split("/")
+				var filename = pathSplit[pathSplit.length - 1]
+				var folderPath = path.substring(0, path.length - filename.length - 1)
+				var folder = this.getFileFromPath(folderPath)
+				var file = this.getFileFromPath(path)
+
+				// prevent putting a folder inside itself
+				if (file.type == "folder" && target.startsWith(path)) {
+					continue
+				}
+
+				if (folder && file) {
+					delete folder.files[filename]
+
+					if (filename in targetFolder.files) {
+						filename = this.getNewFileName(targetFolder, filename, 2)
+					}
+
+					targetFolder.files[filename] = file
+					file.filename = filename
+				}
+			}
+
+			this.save()
+		}
+	}
+	getFolders(current, folder, path) {
+		if (folder == undefined) { folder = this.homeFolder }
+		if (current == undefined) { current = { folders:[], filename:"Home", path: "/" } }
+		if (path == undefined) { path = "" }
+
+		for (var k in folder.files) {
+			var file = folder.files[k]
+			if (file.type == "folder") {
+				var innerPath = path + "/" + file.filename
+				var innerFolder = {
+					folders: [],
+					filename: file.filename,
+					path: innerPath
+				}
+				this.getFolders(innerFolder, file, innerPath)
+				current.folders.push(innerFolder)
+			}
+		}
+
+		current.folders.sort((a,b) => {
+			if (a.filename !== b.filename) {
+				if (a.filename >= b.filename) {
+					return 1
+				} else {
+					return -1
+				}
+			}
+			return 0
+		})
+
+		return current
 	}
 }
 

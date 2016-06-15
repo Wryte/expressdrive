@@ -1,0 +1,20 @@
+<div id="moveItemsPopup" class="popup move-popup">
+	<div class="header">Move <span id="moveItemsHeaderSpan"></span> to</div>
+	<div class="body">
+		<div id="folderViewElement"></div>
+	</div>
+	<div class="footer">
+		<button id="moveButton" class="primary">Move</button>
+		<button data-close-popup=true>Cancel</button>
+	</div>
+</div>
+
+<script id="folderItemTemplate" type="text/x-handlebars-template">
+	<div class="folder-item \{{selected}}" style="margin-left: \{{margin}}em;">
+		<div class="expand-toggle">
+			<i class="fa fa-fw fa-caret-\{{arrow}}"></i>
+		</div>
+		<i class="fa fa-folder-o"></i>
+		<div class="filename">\{{filename}}</div>
+	</div>
+</script>
