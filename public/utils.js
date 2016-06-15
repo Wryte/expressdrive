@@ -234,7 +234,7 @@ function generatePopupTL(popup, shade) {
 	return closeShade
 }
 
-function reloadFileTable() {
+function reloadFileTable(callback) {
 	var fileTableContainer = document.getElementById("fileTableContainer")
 	var xhr = new XMLHttpRequest()
 	xhr.open("GET", __path + "/fileTable" + getCurrentPath())
@@ -242,6 +242,7 @@ function reloadFileTable() {
 	xhr.onload = function(data) {
 		if (xhr.status == 200) {
 			fileTableContainer.innerHTML = xhr.responseText
+			if (callback) { callback() }
 		}
 	}
 

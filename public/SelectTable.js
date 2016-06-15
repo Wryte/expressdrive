@@ -56,7 +56,7 @@ function SelectTable(params) {
 		var itemElements = document.querySelectorAll(self.hashId + " .item-element")
 		var selectAllIcon = document.querySelector(self.hashId + " .select-all-td i")
 
-		self.passedUpdateSelection(selected)
+		if (self.passedUpdateSelection) { self.passedUpdateSelection() }
 
 		if (selected.length == itemElements.length) {
 			if (!hasClass(selectAllIcon, "selected")) {

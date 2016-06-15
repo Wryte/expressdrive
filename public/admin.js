@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-	function reloadUserTable() {
+	function reloadUserTable(callback) {
 		var userTableContainer = document.getElementById("usersTableContainer")
 		var xhr = new XMLHttpRequest()
 		xhr.open("GET", __path + "/userTable")
@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		xhr.onload = function(data) {
 			if (xhr.status == 200) {
 				userTableContainer.innerHTML = xhr.responseText
+				if (callback) { callback() }
 			}
 		}
 
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					passwordInputCU.value = ""
 					passwordRepeatInputCU.value = ""
 					permissionSelectCU.value = "read-only"
-					reloadUserTable()
+					reloadUserTable(updateSelection)
 				}
 			}
 
@@ -157,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					passwordInputEU.value = ""
 					passwordRepeatInputEU.value = ""
 					permissionSelectEU.value = "read-only"
-					reloadUserTable()
+					reloadUserTable(updateSelection)
 				}
 			}
 
@@ -193,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		xhr.onload = function(e) {
 			if (xhr.status == 200) {
 				if (closeShade) { closeShade() }
-				reloadUserTable()
+				reloadUserTable(updateSelection)
 			}
 		}
 
@@ -201,7 +202,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	// file selection
-	function updateSelection(selected) {
+	function updateSelection() {
+		var selected = selectTable.getSelected()
 		if (selected.length == 0) {
 			addClass(editUserPopupButton, "disabled")
 			addClass(deleteUsersPopupButton, "disabled")

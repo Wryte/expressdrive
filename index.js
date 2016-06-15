@@ -260,7 +260,7 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/moveFiles",
 			(req, res) => {
-				this.fileMap.moveFiles(req.body.files, req.body.target)
+				this.fileMap.moveFiles(req.body.files, req.body.target, req.body.keepOriginal)
 				res.sendStatus(200)
 			}
 		)

@@ -428,7 +428,7 @@ td.description-td {
 	text-align: right;
 }
 
-.popup .footer input {
+.popup .footer input[type="file"] {
 	position: absolute;
 	visibility: hidden;
 }
@@ -540,8 +540,8 @@ td.description-td {
 	margin-bottom: 5px;
 }
 
-.popup input,
-.popup select {
+.popup .body input,
+.popup .body select {
 	box-sizing: border-box;
 	width: 100%;
 	margin-bottom: 5px;
@@ -553,7 +553,7 @@ td.description-td {
 	transition: border-color 0.2s;
 }
 
-.popup select {
+.popup .body select {
 	background-color: white;
 }
 
@@ -564,6 +564,24 @@ td.description-td {
 .delete-popup .body {
 	padding: 20px;
 	text-align: center;
+}
+
+.move-popup .footer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.move-popup .footer > * {
+	margin-right: 3px;
+}
+.move-popup .footer > *:last-child {
+	margin-right: 0;
+}
+
+.move-popup .footer .keep-original-container {
+	margin-right: 10px;
 }
 
 .filename-container {

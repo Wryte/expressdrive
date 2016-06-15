@@ -19,7 +19,8 @@ class FileMap {
 			} else {
 				this.homeFolder = {
 					type: "folder",
-					files: {}
+					files: {},
+					diskRC: {}
 				}
 			}
 		})
@@ -139,6 +140,20 @@ class FileMap {
 
 		return newFilename
 	}
+	incRefCount(filename) {
+		var refCount = this.homeFolder.diskRC[filename]
+		if (!refCount) {
+			refCount = 0
+		}
+		refCount++
+		this.homeFolder.diskRC[filename] = refCount
+	}
+	decRefCount(filename) {
+		if (--this.homeFolder.diskRC[filename] == 0) {
+			delete this.homeFolder.diskRC[filename]
+		}
+		return this.homeFolder.diskRC[filename]
+	}
 	addFile(file, path, user) {
 		var folder = this.getFileFromPath(path)
 		file.originalname = this.sanitizeFilename(file.originalname)
@@ -158,6 +173,8 @@ class FileMap {
 			extension,
 			date_created: (new Date()).getTime()
 		}
+
+		this.incRefCount(file.filename)
 
 		this.save()
 	}
@@ -194,7 +211,9 @@ class FileMap {
 				if (file.type == "folder") {
 					deletedFiles = deletedFiles.concat(this.getFilesInFolder(file))
 				} else {
-					deletedFiles.push(file)
+					if (this.decRefCount(file.nameOnDisk) == undefined) {
+						deletedFiles.push(file)
+					}
 				}
 				delete folder.files[filename]
 			}
@@ -256,13 +275,15 @@ class FileMap {
 				var file = this.getFileFromPath(path)
 
 				// prevent putting a folder inside itself
-				if (file.type == "folder" && (target.startsWith(path + "/") || target == path)) {
+				if (!keepOriginal && file.type == "folder" && (target.startsWith(path + "/") || target == path)) {
 					continue
 				}
 
 				if (folder && file) {
 					if (!keepOriginal) {
 						delete folder.files[filename]
+					} else {
+						this.incRefCount(file.nameOnDisk)
 					}
 
 					if (filename in targetFolder.files) {

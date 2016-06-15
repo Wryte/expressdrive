@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	var moveItemsPopupButton = document.getElementById("moveItemsPopupButton")
 	var moveItemsPopup = document.getElementById("moveItemsPopup")
 	var moveItemsHeaderSpan = document.getElementById("moveItemsHeaderSpan")
+	var keepOriginalInput = document.getElementById("keepOriginalInput")
 	var moveButton = document.getElementById("moveButton")
 	var folderViewElement = document.getElementById("folderViewElement")
 	var folderView = new FolderView(folderViewElement)
@@ -120,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				if (xhr.status == 200) {
 					setTimeout(function() { folderNameInput.value = "New Folder" }, 1000)
 					if (closeShade) { closeShade() }
-					reloadFileTable()
+					reloadFileTable(updateSelection)
 				}
 			}
 
@@ -145,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.onload = function(e) {
 				if (xhr.status == 200) {
 					if (closeShade) { closeShade() }
-					reloadFileTable()
+					reloadFileTable(updateSelection)
 				}
 			}
 
@@ -180,13 +181,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			xhr.onload = function(e) {
 				if (xhr.status == 200) {
 					if (closeShade) { closeShade() }
-					reloadFileTable()
+					reloadFileTable(updateSelection)
 				}
 			}
 
 			xhr.send(JSON.stringify({
 				files: files,
-				target: folderView.selectedFolder.path
+				target: folderView.selectedFolder.path,
+				keepOriginal: keepOriginalInput.checked
 			}))
 		}
 	}
@@ -210,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		xhr.onload = function(e) {
 			if (xhr.status == 200) {
 				if (closeShade) { closeShade() }
-				reloadFileTable()
+				reloadFileTable(updateSelection)
 			}
 		}
 
