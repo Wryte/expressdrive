@@ -1,0 +1,21 @@
+<div id="createUserPopup" class="popup edit-popup">
+	<div class="header">Create New User</div>
+	<div class="body">
+		<label>Username</label>
+		<input id="usernameInput" type="text">
+		<label>Password</label>
+		<input id="passwordInput" type="password">
+		<label>Repeat Password</label>
+		<input id="passwordRepeatInput" type="password">
+		<label>Permission</label>
+		<select id="permissionSelect">
+			<option value="read-only">Read-Only</option>
+			<option value="edit">Edit</option>
+			<option value="admin">Admin</option>
+		</select>
+	</div>
+	<div class="footer">
+		<button id="createUserButton" class="primary">Create User</button>
+		<button data-close-popup=true>Cancel</button>
+	</div>
+</div>

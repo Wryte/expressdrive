@@ -8,7 +8,7 @@ html {
 	font-family: Lato, Sans-Serif;
 	font-weight: 300;
 }
-input, button {
+input, button, select, option {
 	font-family: Lato, Sans-Serif;
 	font-weight: 300;
 }
@@ -25,6 +25,7 @@ html, body {
 .flex-grow { flex-grow: 1; }
 .color-red { color: hsl(0,39%,58%); }
 .color-green { color: #75B37A; }
+.nowrap { white-space: nowrap; }
 
 a {
 	text-decoration: none;
@@ -500,23 +501,32 @@ td.description-td {
 	padding: 10px;
 }
 
-.create-folder-popup label,
-.edit-popup label {
+.popup .body label {
 	display: block;
 	font-size: 0.8em;
 	color: #999;
 	margin-bottom: 5px;
 }
 
-.create-folder-popup input,
-.edit-popup input {
+.popup input,
+.popup select {
 	box-sizing: border-box;
 	width: 100%;
+	margin-bottom: 5px;
 	padding: 5px;
 	font-size: 1.1em;
 	border-radius: 0px;
 	border: 1px solid #ddd;
 	-webkit-appearance: none;
+	transition: border-color 0.2s;
+}
+
+.popup select {
+	background-color: white;
+}
+
+.popup .bad-input {
+	border-color: hsl(0,39%,58%);
 }
 
 .delete-popup .body {

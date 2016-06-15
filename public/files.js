@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-	// setup popups
 	var shade = document.getElementById("shade")
 
 	var uploadButton = document.getElementById("uploadButton")
@@ -61,14 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	// create folder popup events
-	folderNameInput.onkeyup = function(e) {
-		if (e.keyCode == 13) { createFolder() }
-		var sanitizedName = sanitizeFileName(this.value)
-		if (this.value !== sanitizedName) {
-			this.value = sanitizeFileName(this.value)
-		}
-	}
-
+	folderNameInput.onkeyup = sanitizeKeyUp
 	createFolderButton.onclick = createFolder
 
 	function createFolder() {
@@ -120,13 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// edit popup events
 	editButton.onclick = editFile
-	filenameInput.onkeyup = function(e) {
-		if (e.keyCode == 13) { editFile() }
-		var sanitizedName = sanitizeFileName(this.value)
-		if (this.value !== sanitizedName) {
-			this.value = sanitizeFileName(this.value)
-		}
-	}
+	filenameInput.onkeyup = sanitizeKeyUp
 
 	function editFile() {
 		var selected = selectTable.getSelected()

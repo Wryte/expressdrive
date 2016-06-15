@@ -107,27 +107,46 @@ document.addEventListener("click", function(e) {
 	}
 })
 
-function addClass(el, classString) {
-	var splitClass = el.className.split(" ")
+function addClass(els, classString) {
+	if (!Array.isArray(els)) {
+		els = [els]
+	}
 
-	for (var i = 0; i < splitClass.length; i++) {
-		if (splitClass[i] == classString) {
-			return
+	for (var j = 0; j < els.length; j++) {
+		var el = els[j]
+		var splitClass = el.className.split(" ")
+		var found = false
+
+		for (var i = 0; i < splitClass.length; i++) {
+			if (splitClass[i] == classString) {
+				found = true
+				break
+			}
+		}
+
+		if (!found) {
+			splitClass.push(classString)
+			el.className = splitClass.join(" ")
 		}
 	}
 
-	splitClass.push(classString)
-	el.className = splitClass.join(" ")
 }
 
-function removeClass(el, classString) {
-	var splitClass = el.className.split(" ")
+function removeClass(els, classString) {
+	if (!Array.isArray(els)) {
+		els = [els]
+	}
 
-	for (var i = 0; i < splitClass.length; i++) {
-		if (splitClass[i] == classString) {
-			splitClass.splice(i, 1)
-			el.className = splitClass.join(" ")
-			return
+	for (var j = 0; j < els.length; j++) {
+		var el = els[j]
+		var splitClass = el.className.split(" ")
+
+		for (var i = 0; i < splitClass.length; i++) {
+			if (splitClass[i] == classString) {
+				splitClass.splice(i, 1)
+				el.className = splitClass.join(" ")
+				break
+			}
 		}
 	}
 }
@@ -138,6 +157,14 @@ function hasClass(el, classString) {
 
 function sanitizeFileName(name) {
 	return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
+}
+
+function sanitizeKeyUp(e) {
+	if (e.keyCode == 13) { editFile() }
+	var sanitizedName = sanitizeFileName(this.value)
+	if (this.value !== sanitizedName) {
+		this.value = sanitizeFileName(this.value)
+	}
 }
 
 function uploadFile(file, uploadItemsContainer) {

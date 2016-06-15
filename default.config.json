@@ -1,5 +1,5 @@
 {
 	"path": "/files",
-	"adminUserName": "admin",
+	"adminUsername": "admin",
 	"adminPassword": "test"
 }

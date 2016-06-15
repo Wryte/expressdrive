@@ -10,12 +10,12 @@
 			</div>
 		</div>
 	</div>
-	{{#if user.admin}}
+	{{#ifCond user.permission '==' 'admin'}}
 	<div class="navigation">
 		<a href="{{path}}/admin"><i class="fa fa-lock fa-fw"></i> Administration</a>
 		<a href="{{path}}"><i class="fa fa-folder fa-fw"></i> Files</a>
 	</div>
-	{{/if}}
+	{{/ifCond}}
 	<div class="main">
 		<div class="inner">
 			<div class="content">
@@ -28,5 +28,6 @@
 		{{> createFolderPopup }}
 		{{> deletePopup }}
 		{{> editPopup }}
+		{{> createUserPopup }}
 	</div>
 </div>

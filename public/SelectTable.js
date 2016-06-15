@@ -3,8 +3,6 @@ function SelectTable(params) {
 
 	this.hashId = "#" + params.id
 	this.passedUpdateSelection = params.updateSelection
-	this.table = document.getElementById(params.id)
-	this.selectAllIcon = this.table.querySelector(".select-all-td i")
 
 	bindOn("click", this.hashId + " .select-td", function(e) {
 		var parentTR = this.parentElement
@@ -23,12 +21,13 @@ function SelectTable(params) {
 
 	bindOn("click", this.hashId + " .select-all-td", function(e) {
 		var selected = self.getSelected()
-		var itemElements = self.table.querySelectorAll(".item-element")
+		var itemElements = document.querySelectorAll(self.hashId + " .item-element")
+		var selectAllIcon = this.querySelector("i")
 		var tl = new TimelineMax()
 		
 		if (selected.length == 0) {
-			addClass(self.selectAllIcon, "selected")
-			tl.add(self.selectOnTL(self.selectAllIcon))
+			addClass(selectAllIcon, "selected")
+			tl.add(self.selectOnTL(selectAllIcon))
 
 			for (var i = 0; i < itemElements.length; i++) {
 				var itemElement = itemElements[i]
@@ -38,8 +37,8 @@ function SelectTable(params) {
 
 		} else {
 			if (itemElements.length == selected.length) {
-				removeClass(self.selectAllIcon, "selected")
-				tl.add(self.selectOffTL(self.selectAllIcon))
+				removeClass(selectAllIcon, "selected")
+				tl.add(self.selectOffTL(selectAllIcon))
 			}
 
 			for (var i = 0; i < selected.length; i++) {
@@ -54,18 +53,19 @@ function SelectTable(params) {
 
 	function updateSelection() {
 		var selected = self.getSelected()
-		var itemElements = self.table.querySelectorAll(".item-element")
+		var itemElements = document.querySelectorAll(self.hashId + " .item-element")
+		var selectAllIcon = document.querySelector(self.hashId + " .select-all-td i")
 
 		self.passedUpdateSelection(selected)
 
 		if (selected.length == itemElements.length) {
-			if (!hasClass(self.selectAllIcon, "selected")) {
-				addClass(self.selectAllIcon, "selected")
-				self.selectOnTL(self.selectAllIcon)
+			if (!hasClass(selectAllIcon, "selected")) {
+				addClass(selectAllIcon, "selected")
+				self.selectOnTL(selectAllIcon)
 			}
-		} else if (hasClass(self.selectAllIcon, "selected")) {
-			removeClass(self.selectAllIcon, "selected")
-			self.selectOffTL(self.selectAllIcon)
+		} else if (hasClass(selectAllIcon, "selected")) {
+			removeClass(selectAllIcon, "selected")
+			self.selectOffTL(selectAllIcon)
 		}
 	}
 }
@@ -97,5 +97,5 @@ SelectTable.prototype.selectOffTL = function(icon) {
 }
 
 SelectTable.prototype.getSelected = function() {	
-	return this.table.querySelectorAll(".item-element.selected")
+	return document.querySelectorAll(this.hashId + " .item-element.selected")
 }

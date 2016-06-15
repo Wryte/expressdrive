@@ -1,0 +1,33 @@
+{{#if users}}
+<table id="usersTable" class="file-table">
+	<thead>
+		<tr>
+			<th class="shrink text-center select-all-td"><i class="fa fa-circle-o"></i></th>
+			<th class="indent">Username</th>
+			<th class="shrink">Permission</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each users}}
+		<tr class="item-element">
+			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
+			<td class="description-td">
+				<div class="user-container">
+					<i class="fa fa-user fa-fw"></i>
+					<div>
+						<p>{{this.username}}</p>
+					</div>
+				</div>
+			</td>
+			<td class="text-center nowrap">
+				{{this.permission}}
+			</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
+{{else}}
+<div class="no-files">
+	<p>There are currently no users. Click the create user button ( <i class="fa fa-user"></i> ) above to create some.</p>
+</div>
+{{/if}}

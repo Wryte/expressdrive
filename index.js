@@ -14,6 +14,7 @@ var LocalStrategy = require("passport-local").Strategy
 var appRoot = require("app-root-path")
 var Sha256 = require("./public/Sha256")
 var FileMap = require("./FileMap")
+var BasicUsers = require("./BasicUsers")
 var multer = require("multer")
 var mkdirp = require("mkdirp")
 
@@ -38,13 +39,13 @@ for (var k in defaultConfig) {
 
 var secret = "M^Secr3tIsB3tter"
 
-var users = {
-	[config.adminUserName]: {
-		admin: true,
-		username: config.adminUserName,
-		password: Sha256.hash(Sha256.hash(config.adminUserName + config.adminPassword) + secret)
-	}
-}
+var basicUsers = new BasicUsers({
+	saveDestination: appRoot + "/expressdrive/users.json",
+	adminUsername: config.adminUsername,
+	adminPassword: config.adminPassword,
+	secret
+})
+
 
 // setup passport
 passport.use(new LocalStrategy(
@@ -52,11 +53,11 @@ passport.use(new LocalStrategy(
 		passReqToCallback: true
 	},
 	(req, username, password, done) => {
-		var user = users[username.toLowerCase()]
+		var user = basicUsers.users[username.toLowerCase()]
 		if (!user) {
 			req.session.loginMessage = "Invalid username"
 			return done(null, false)
-		} else if (Sha256.hash(password + secret) !== user.password) {
+		} else if (!basicUsers.checkPassword(user, password)) {
 			req.session.loginMessage = "Invalid password"
 			return done(null, false)
 		}
@@ -72,7 +73,7 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((id, done) => {
-	done(null, users[id])
+	done(null, basicUsers.users[id])
 })
 
 class ExpressDrive {
@@ -87,9 +88,13 @@ class ExpressDrive {
 			editFile: true
 		}
 		this.adminRestrictedPaths = {
-			admin: true
+			admin: true,
+			createUser: true,
+			editUser: true,
+			deleteUser: true,
+			userTable: true
 		}
-		this.fileMap = new FileMap({ saveDestination: appRoot + "/expressdrive/files.json"})
+		this.fileMap = new FileMap({ saveDestination: appRoot + "/expressdrive/files.json" })
 
 		this.init()
 	}
@@ -134,7 +139,7 @@ class ExpressDrive {
 						if (!req.user && (userRestriced || adminRestricted)) {
 							return res.redirect(config.path + "/login?oreq=" + req.originalUrl)
 						}
-						if (req.user && !req.user.admin && adminRestricted) {
+						if (req.user && req.user.permission !== "admin" && adminRestricted) {
 							return res.sendStatus(403)
 						}
 						next()
@@ -270,8 +275,40 @@ class ExpressDrive {
 					page: "loggedIn",
 					view: "adminView",
 					user: req.user,
+					users: basicUsers.getUsers(),
 					path: config.path
 				}))
+			}
+		)
+
+		this.app.get(config.path + "/userTable",
+			(req, res) => {
+				res.send(templates.usersTable({
+					user: req.user,
+					users: basicUsers.getUsers(),
+					path: config.path
+				}))
+			}
+		)
+
+		this.app.post(config.path + "/createUser",
+			(req, res) => {
+				basicUsers.createUser(req.body.username, req.body.password, req.body.permission)
+				res.sendStatus(200)
+			}
+		)
+
+		this.app.post(config.path + "/editUser",
+			(req, res) => {
+				basicUsers.editUser(req.body.oldUsername, req.body.username, req.body.password, req.body.permission)
+				res.sendStatus(200)
+			}
+		)
+
+		this.app.post(config.path + "/deleteUser",
+			(req, res) => {
+				basicUsers.deleteUser(req.body.username)
+				res.sendStatus(200)
 			}
 		)
 
