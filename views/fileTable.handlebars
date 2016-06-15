@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{{#each files}}
-		<tr class="item-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}">
+		<tr class="item-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}" data-extension="{{this.extension}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
 				<a href="{{../path}}/f{{this.uri}}" {{#ifCond this.type "==" "file"}} target="_blank" {{/ifCond}}>

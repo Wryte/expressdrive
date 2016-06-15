@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	// createUser events
-	usernameInputCU.onkeyup = sanitizeKeyUp
+	usernameInputCU.onkeyup = sanitizeKeyUp()
 
 	createUserButton.onclick = function() {
 		var username = usernameInputCU.value
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	// createUser events
-	usernameInputEU.onkeyup = sanitizeKeyUp
+	usernameInputEU.onkeyup = sanitizeKeyUp()
 
 	editUserButton.onclick = function() {
 		var selected = selectTable.getSelected()

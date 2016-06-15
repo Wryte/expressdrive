@@ -35,9 +35,9 @@ function getCurrentFolder() {
 function setFolderName() {
 	var folderName = getCurrentFolder()
 	var spans = document.querySelectorAll(".folder-name")
-	spans.forEach(function(span) {
-		span.innerText = folderName
-	})
+	for (var i = 0; i < spans.length; i++) {
+		spans[i].innerText = folderName
+	}
 }
 
 function getSearchObj() {
@@ -160,11 +160,13 @@ function sanitizeFileName(name) {
 	return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
 }
 
-function sanitizeKeyUp(e) {
-	if (e.keyCode == 13) { editFile() }
-	var sanitizedName = sanitizeFileName(this.value)
-	if (this.value !== sanitizedName) {
-		this.value = sanitizeFileName(this.value)
+function sanitizeKeyUp(enterFunc) {
+	return function(e) {
+		if (e.keyCode == 13 && enterFunc) { enterFunc() }
+		var sanitizedName = sanitizeFileName(this.value)
+		if (this.value !== sanitizedName) {
+			this.value = sanitizeFileName(this.value)
+		}
 	}
 }
 

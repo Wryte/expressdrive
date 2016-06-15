@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	var editPopupButton = document.getElementById("editPopupButton")
 	var editPopup = document.getElementById("editPopup")
 	var filenameInput = document.getElementById("filenameInput")
+	var editExtensionSpan = document.getElementById("editExtensionSpan")
 	var editButton = document.getElementById("editButton")
 
 	var deletePopupButton = document.getElementById("deletePopupButton")
@@ -46,8 +47,21 @@ document.addEventListener("DOMContentLoaded", function() {
 	editPopupButton.onclick = function() {
 		var selected = selectTable.getSelected()
 		if (selected.length == 1) {
-			document.getElementById("editHeaderSpan").innerText = selected[0].dataset.filename
-			filenameInput.value = selected[0].dataset.filename
+			var itemData = selected[0].dataset
+			document.getElementById("editHeaderSpan").innerText = itemData.filename
+
+			if (itemData.extension) {
+				var filenameSplit = itemData.filename.split(".")
+				
+				editExtensionSpan.style.display = "block"
+				editExtensionSpan.innerText = "." + filenameSplit.pop()
+				
+				filenameInput.value = filenameSplit.join(".")
+			} else {
+				editExtensionSpan.style.display = "none"
+				filenameInput.value = itemData.filename
+			}
+			
 			closeShade = generatePopupTL(editPopup, shade)
 		}
 	}
@@ -60,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	// create folder popup events
-	folderNameInput.onkeyup = sanitizeKeyUp
+	folderNameInput.onkeyup = sanitizeKeyUp(createFolder)
 	createFolderButton.onclick = createFolder
 
 	function createFolder() {
@@ -112,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// edit popup events
 	editButton.onclick = editFile
-	filenameInput.onkeyup = sanitizeKeyUp
+	filenameInput.onkeyup = sanitizeKeyUp(editFile)
 
 	function editFile() {
 		var selected = selectTable.getSelected()
@@ -131,7 +145,16 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 			}
 
-			xhr.send(JSON.stringify({ name: filename, filePath: selected[0].dataset.uri }))
+			var itemData = selected[0].dataset
+
+			if (itemData.extension) {
+				filename = filename + "." + itemData.extension
+			}
+
+			xhr.send(JSON.stringify({
+				name: filename,
+				filePath: itemData.uri
+			}))
 		}
 	}
 

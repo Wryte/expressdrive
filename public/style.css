@@ -209,6 +209,7 @@ label.button.primary {
 
 .navigation {
 	display: flex;
+	flex-shrink: 0;
 	justify-content: center;
 	background-color: #aaa;
 	font-size: 0.9em;
@@ -314,7 +315,7 @@ label.button.primary {
 }
 
 .file-table .indent {
-	padding: 5px 45px;
+	padding: 5px 3.5em;
 }
 
 .file-table .shrink {
@@ -361,6 +362,32 @@ td.description-td {
 .description-td .sub {
 	color: #999;
 	font-size: 0.8em;
+}
+
+@media (max-width: 550px) {
+	.toolbar {
+		flex-direction: column;
+	}
+	.breadcrumbs {
+		margin-bottom: 5px;
+	}
+	.tool-container {
+		flex-direction: column;
+	}	
+	.tool-button {
+		margin-right: 0;
+		margin-bottom: 5px;
+	}
+
+	.file-table {
+		font-size: 0.9em;
+	}
+	.description-td .fa {
+		font-size: 1.0em;
+	}
+	.file-table .indent {
+		padding: 5px 3.0em;
+	}
 }
 
 .shade {
@@ -532,4 +559,19 @@ td.description-td {
 .delete-popup .body {
 	padding: 20px;
 	text-align: center;
+}
+
+.filename-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.filename-container input {
+	flex-grow: 1;
+}
+
+.filename-container span {
+	flex-shrink: 0;
+	padding: 5px;
 }

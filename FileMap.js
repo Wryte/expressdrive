@@ -69,7 +69,8 @@ class FileMap {
 				type: file.type,
 				created_by: file.created_by,
 				time: "created on " + moment(file.date_created).format("MMMM D, YYYY"),
-				uri: path + "/" + encodeURI(file.filename)
+				uri: path + "/" + encodeURI(file.filename),
+				extension: file.extension
 			})
 			file.type == "file" ? fileCount++ : folderCount++
 		}
@@ -146,11 +147,15 @@ class FileMap {
 			file.originalname = this.getNewFileName(folder, file.originalname, 2)
 		}
 
+		var extensionSplit = file.originalname.split(".")
+		var extension = extensionSplit[extensionSplit.length - 1]
+
 		folder.files[file.originalname] = {
 			type: "file",
 			nameOnDisk: file.filename,
 			filename: file.originalname,
 			created_by: user.username,
+			extension,
 			date_created: (new Date()).getTime()
 		}
 
