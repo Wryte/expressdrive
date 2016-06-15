@@ -243,7 +243,7 @@ class FileMap {
 
 		this.save()
 	}
-	moveFiles(files, target) {
+	moveFiles(files, target, keepOriginal) {
 		var targetFolder = this.getFileFromPath(target)
 
 		if (targetFolder) {
@@ -256,12 +256,14 @@ class FileMap {
 				var file = this.getFileFromPath(path)
 
 				// prevent putting a folder inside itself
-				if (file.type == "folder" && target.startsWith(path)) {
+				if (file.type == "folder" && (target.startsWith(path + "/") || target == path)) {
 					continue
 				}
 
 				if (folder && file) {
-					delete folder.files[filename]
+					if (!keepOriginal) {
+						delete folder.files[filename]
+					}
 
 					if (filename in targetFolder.files) {
 						filename = this.getNewFileName(targetFolder, filename, 2)
