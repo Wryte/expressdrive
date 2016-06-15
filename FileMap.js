@@ -209,7 +209,13 @@ class FileMap {
 			if (folder && filename in folder.files) {
 				var file = folder.files[filename]
 				if (file.type == "folder") {
-					deletedFiles = deletedFiles.concat(this.getFilesInFolder(file))
+					var folderFiles = this.getFilesInFolder(file)
+					for (var j = 0; j < folderFiles.length; j++) {
+						var folderFile = folderFiles[j]
+						if (this.decRefCount(folderFile.nameOnDisk) == undefined) {
+							deletedFiles.push(folderFile)
+						}
+					}
 				} else {
 					if (this.decRefCount(file.nameOnDisk) == undefined) {
 						deletedFiles.push(file)
