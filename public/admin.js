@@ -32,7 +32,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	var permissionSelectEU = document.getElementById("permissionSelectEU")
 	var editUserButton = document.getElementById("editUserButton")
 
-	var deleteUserPopupButton = document.getElementById("deleteUserPopupButton")
+	var deleteUsersPopupButton = document.getElementById("deleteUsersPopupButton")
+	var deleteUsersPopup = document.getElementById("deleteUsersPopup")
+	var deleteUsersButton = document.getElementById("deleteUsersButton")
+	var deleteUsersHeaderSpan = document.getElementById("deleteUsersHeaderSpan")
+	var deleteUsersBodySpan = document.getElementById("deleteUsersBodySpan")
 
 	var closeShade
 
@@ -48,6 +52,15 @@ document.addEventListener("DOMContentLoaded", function() {
 			usernameInputEU.value = selected[0].dataset.username
 			permissionSelectEU.value = selected[0].dataset.permission
 			closeShade = generatePopupTL(editUserPopup, shade)
+		}
+	}
+
+	deleteUsersPopupButton.onclick = function() {
+		var selected = selectTable.getSelected()
+		if (selected.length > 0) {
+			deleteUsersHeaderSpan.innerText = selected.length == 1 ? "'" + selected[0].dataset.username + "'" : selected.length + " users"
+			deleteUsersBodySpan.innerText = selected.length == 1 ? "this user" : "these users"
+			closeShade = generatePopupTL(deleteUsersPopup, shade)
 		}
 	}
 
@@ -105,6 +118,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
+	// createUser events
+	usernameInputEU.onkeyup = sanitizeKeyUp
+
 	editUserButton.onclick = function() {
 		var selected = selectTable.getSelected()
 		var oldUsername = selected[0].dataset.username
@@ -159,14 +175,39 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	}
 
+	// deleteUsers events
+
+	deleteUsersButton.onclick = function() {
+		var selected = selectTable.getSelected()
+		var usernames = []
+
+		for (var i = 0; i < selected.length; i++) {
+			usernames.push(selected[i].dataset.username)
+		}
+
+		var xhr = new XMLHttpRequest()
+		
+		xhr.open("POST", __path + "/deleteUsers")
+		xhr.setRequestHeader("Content-type", "application/json");
+
+		xhr.onload = function(e) {
+			if (xhr.status == 200) {
+				if (closeShade) { closeShade() }
+				reloadUserTable()
+			}
+		}
+
+		xhr.send(JSON.stringify({ usernames: usernames }))
+	}
+
 	// file selection
 	function updateSelection(selected) {
 		if (selected.length == 0) {
 			addClass(editUserPopupButton, "disabled")
-			addClass(deleteUserPopupButton, "disabled")
+			addClass(deleteUsersPopupButton, "disabled")
 		}
 		if (selected.length >= 1) {
-			removeClass(deleteUserPopupButton, "disabled")
+			removeClass(deleteUsersPopupButton, "disabled")
 			removeClass(editUserPopupButton, "disabled")
 		}
 		if (selected.length > 1) {

@@ -33,9 +33,10 @@ function getCurrentFolder() {
 }
 
 function setFolderName() {
+	var folderName = getCurrentFolder()
 	var spans = document.querySelectorAll(".folder-name")
 	spans.forEach(function(span) {
-		span.innerText = getCurrentFolder()
+		span.innerText = folderName
 	})
 }
 
