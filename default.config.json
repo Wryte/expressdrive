@@ -1,5 +1,8 @@
 {
 	"path": "/files",
 	"adminUsername": "admin",
-	"adminPassword": "test"
+	"adminPassword": "test",
+	"titlePrefix": "ExpressDrive",
+	"companyName": "ExpressDrive",
+	"logo": "http://www.google.com/drive/images/drive/logo-drive.png"
 }

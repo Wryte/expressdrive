@@ -42,6 +42,17 @@ class BasicUsers {
 			}
 		}
 
+		users.sort((a,b) => {
+			if (a.username !== b.username) {
+				if (a.username >= b.username) {
+					return 1
+				} else {
+					return -1
+				}
+			}
+			return 0
+		})
+
 		return users
 	}
 	hashPassword(password) {
