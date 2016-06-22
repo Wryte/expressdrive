@@ -81,14 +81,14 @@ class ExpressDrive {
 		this.app = app
 		this.restrictedPaths = {
 			f: true,
-			fileTable: true,
-			getFolders: true
+			fileTable: true
 		}
 		this.editRestrictedPaths = {
 			upload: true,
 			createFolder: true,
 			editFile: true,
 			moveFiles: true,
+			getFolders: true,
 			deleteFiles: true
 		}
 		this.adminRestrictedPaths = {
