@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	editUserButton.onclick = function() {
 		var selected = selectTable.getSelected()
+		var id = selected[0].dataset.id
 		var oldUsername = selected[0].dataset.username
 		var oldPermission = selected[0].dataset.permission
 		var username = usernameInputEU.value
@@ -163,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 
 			var data = {
-				oldUsername: oldUsername,
+				id: id,
 				username: username,
 				permission: permission
 			}
@@ -180,10 +181,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	deleteUsersButton.onclick = function() {
 		var selected = selectTable.getSelected()
-		var usernames = []
+		var ids = []
 
 		for (var i = 0; i < selected.length; i++) {
-			usernames.push(selected[i].dataset.username)
+			ids.push(selected[i].dataset.id)
 		}
 
 		var xhr = new XMLHttpRequest()
@@ -198,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 		}
 
-		xhr.send(JSON.stringify({ usernames: usernames }))
+		xhr.send(JSON.stringify({ ids: ids }))
 	}
 
 	// file selection

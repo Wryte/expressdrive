@@ -9,25 +9,42 @@ class BasicUsers {
 		this.adminUsername = props.adminUsername.toLowerCase()
 		this.adminPassword = props.adminPassword
 		this.secret = props.secret
+
 		this.load()
 	}
 	save() {
-		fs.writeFile(this.saveDestination, JSON.stringify(this.users))
+		fs.writeFile(this.saveDestination, JSON.stringify({
+			users: this.users,
+			nextUserId: this.nextUserId
+		}))
 	}
 	load() {
 		fs.readFile(this.saveDestination, (err, data) => {
 			if (data) {
-				this.users = JSON.parse(data)
+				var parsed = JSON.parse(data)
+				this.users = parsed.users
+				this.nextUserId = parsed.nextUserId
 			} else {
 				this.users = {}
+				this.nextUserId = 1
 			}
 
-			this.users[this.adminUsername] = {
+			this.users["0"] = {
+				id: 0,
 				username: this.adminUsername,
 				password: this.hashPassword(Sha256.hash(this.adminUsername + this.adminPassword)),
 				permission: 0
 			}
 		})
+	}
+	getUserByUsername(username) {
+		username = username.toLowerCase()
+		for (var k in this.users) {
+			var user = this.users[k]
+			if (user.username == username) {
+				return user
+			}
+		}
 	}
 	getUsers() {
 		var users = []
@@ -36,6 +53,7 @@ class BasicUsers {
 			var user = this.users[k]
 			if (user.username !== this.adminUsername) {
 				users.push({
+					id: user.id,
 					username: user.username,
 					permission: user.permission
 				})
@@ -65,7 +83,9 @@ class BasicUsers {
 		username = username.toLowerCase()
 
 		if (username !== this.adminUsername) {
-			this.users[username] = {
+			var id = this.nextUserId++
+			this.users[id] = {
+				id,
 				username,
 				password: this.hashPassword(password),
 				permission
@@ -74,16 +94,12 @@ class BasicUsers {
 			this.save()
 		}
 	}
-	editUser(oldUsername, username, password, permission) {
+	editUser(id, username, password, permission) {
 		username = username.toLowerCase()
-		var oldUser = this.users[oldUsername]
+		var oldUser = this.users[id]
 
-		if (username !== this.adminUsername && oldUsername !== this.adminUsername && oldUser) {
-			if (oldUsername !== username) {
-				delete this.users[oldUsername]
-				this.users[username] = oldUser
-				oldUser.username = username
-			}
+		if (username !== this.adminUsername && id !== 0 && oldUser) {
+			oldUser.username = username
 
 			if (password) {
 				oldUser.password = this.hashPassword(password)
@@ -94,12 +110,12 @@ class BasicUsers {
 			this.save()
 		}
 	}
-	deleteUsers(usernames) {
-		for (var i = 0; i < usernames.length; i++) {
-			var username = usernames[i]
+	deleteUsers(ids) {
+		for (var i = 0; i < ids.length; i++) {
+			var id = ids[i]
 			
-			if (username !== this.adminUsername) {
-				delete this.users[username]
+			if (id !== this.adminUsername) {
+				delete this.users[id]
 				this.save()
 			}
 		}

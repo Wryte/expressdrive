@@ -53,7 +53,7 @@ passport.use(new LocalStrategy(
 		passReqToCallback: true
 	},
 	(req, username, password, done) => {
-		var user = basicUsers.users[username.toLowerCase()]
+		var user = basicUsers.getUserByUsername(username)
 		if (!user) {
 			req.session.loginMessage = "Invalid username"
 			return done(null, false)
@@ -62,6 +62,7 @@ passport.use(new LocalStrategy(
 			return done(null, false)
 		}
 		done(null, {
+			id: user.id,
 			username: user.username,
 			permission: user.permission
 		})
@@ -69,7 +70,7 @@ passport.use(new LocalStrategy(
 ))
 
 passport.serializeUser((user, done) => {
-	done(null, user.username);
+	done(null, user.id);
 })
 
 passport.deserializeUser((id, done) => {
@@ -81,17 +82,15 @@ class ExpressDrive {
 		this.app = app
 		this.restrictedPaths = {
 			f: true,
-			fileTable: true
-		}
-		this.editRestrictedPaths = {
+			fileTable: true,
+			// edit
 			upload: true,
 			createFolder: true,
 			editFile: true,
 			moveFiles: true,
 			getFolders: true,
-			deleteFiles: true
-		}
-		this.adminRestrictedPaths = {
+			deleteFiles: true,
+			// admin
 			admin: true,
 			createUser: true,
 			editUser: true,
@@ -138,17 +137,9 @@ class ExpressDrive {
 					loadTemplates(() => {
 						var urlComponents = req.originalUrl.substring(config.path.length).split("/")
 						var userRestriced = this.restrictedPaths[urlComponents[1]]
-						var editRestricted = this.editRestrictedPaths[urlComponents[1]]
-						var adminRestricted = this.adminRestrictedPaths[urlComponents[1]]
 						
-						if (!req.user && (userRestriced || editRestricted || adminRestricted)) {
+						if (!req.user && userRestriced) {
 							return res.redirect(config.path + "/login?oreq=" + req.originalUrl)
-						}
-						if (req.user && req.user.permission > 0 && adminRestricted) {
-							return res.sendStatus(403)
-						}
-						if (req.user && req.user.permission > 1 && editRestricted) {
-							return res.sendStatus(403)
 						}
 						next()
 					})
@@ -321,14 +312,14 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/editUser",
 			(req, res) => {
-				basicUsers.editUser(req.body.oldUsername, req.body.username, req.body.password, req.body.permission)
+				basicUsers.editUser(req.body.id, req.body.username, req.body.password, req.body.permission)
 				res.sendStatus(200)
 			}
 		)
 
 		this.app.post(config.path + "/deleteUsers",
 			(req, res) => {
-				basicUsers.deleteUsers(req.body.usernames)
+				basicUsers.deleteUsers(req.body.ids)
 				res.sendStatus(200)
 			}
 		)

@@ -9,7 +9,7 @@
 	</thead>
 	<tbody>
 		{{#each users}}
-		<tr class="item-element" data-username="{{this.username}}" data-permission="{{this.permission}}">
+		<tr class="item-element" data-id="{{this.id}}" data-username="{{this.username}}" data-permission="{{this.permission}}">
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			<td class="description-td">
 				<div class="user-container">
@@ -21,8 +21,7 @@
 			</td>
 			<td class="text-center nowrap">
 				{{#ifCond this.permission '==' 0}}admin{{/ifCond}}
-				{{#ifCond this.permission '==' 1}}edit{{/ifCond}}
-				{{#ifCond this.permission '==' 2}}read-only{{/ifCond}}
+				{{#ifCond this.permission '==' 1}}user{{/ifCond}}
 			</td>
 		</tr>
 		{{/each}}
