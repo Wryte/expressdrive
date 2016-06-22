@@ -25,7 +25,7 @@ class BasicUsers {
 			this.users[this.adminUsername] = {
 				username: this.adminUsername,
 				password: this.hashPassword(Sha256.hash(this.adminUsername + this.adminPassword)),
-				permission: "admin"
+				permission: 0
 			}
 		})
 	}

@@ -20,7 +20,9 @@
 				</div>
 			</td>
 			<td class="text-center nowrap">
-				{{this.permission}}
+				{{#ifCond this.permission '==' 0}}admin{{/ifCond}}
+				{{#ifCond this.permission '==' 1}}edit{{/ifCond}}
+				{{#ifCond this.permission '==' 2}}read-only{{/ifCond}}
 			</td>
 		</tr>
 		{{/each}}

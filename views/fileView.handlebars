@@ -16,6 +16,7 @@
 			{{/if}}
 		{{/each}}
 	</div>
+	{{#ifCond user.permission '<=' 1}}
 	<div class="tool-container">
 		<div id="uploadButton" class="tool-button">
 			<span class="icon fa-stack">
@@ -49,6 +50,7 @@
 			<p>Delete</p>
 		</div>
 	</div>
+	{{/ifCond}}
 </div>
 <div class="break"></div>
 <div id="fileTableContainer">

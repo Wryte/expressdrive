@@ -81,13 +81,15 @@ class ExpressDrive {
 		this.app = app
 		this.restrictedPaths = {
 			f: true,
+			fileTable: true,
+			getFolders: true
+		}
+		this.editRestrictedPaths = {
 			upload: true,
 			createFolder: true,
-			fileTable: true,
 			editFile: true,
 			moveFiles: true,
-			deleteFiles: true,
-			getFolders: true
+			deleteFiles: true
 		}
 		this.adminRestrictedPaths = {
 			admin: true,
@@ -136,12 +138,16 @@ class ExpressDrive {
 					loadTemplates(() => {
 						var urlComponents = req.originalUrl.substring(config.path.length).split("/")
 						var userRestriced = this.restrictedPaths[urlComponents[1]]
+						var editRestricted = this.editRestrictedPaths[urlComponents[1]]
 						var adminRestricted = this.adminRestrictedPaths[urlComponents[1]]
 						
-						if (!req.user && (userRestriced || adminRestricted)) {
+						if (!req.user && (userRestriced || editRestricted || adminRestricted)) {
 							return res.redirect(config.path + "/login?oreq=" + req.originalUrl)
 						}
-						if (req.user && req.user.permission !== "admin" && adminRestricted) {
+						if (req.user && req.user.permission > 0 && adminRestricted) {
+							return res.sendStatus(403)
+						}
+						if (req.user && req.user.permission > 1 && editRestricted) {
 							return res.sendStatus(403)
 						}
 						next()

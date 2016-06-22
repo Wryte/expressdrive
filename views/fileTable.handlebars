@@ -2,7 +2,9 @@
 <table id="fileTable" class="file-table">
 	<thead>
 		<tr>
+			{{#ifCond user.permission '<' 2}}
 			<th class="shrink text-center select-all-td"><i class="fa fa-circle-o"></i></th>
+			{{/ifCond}}
 			<th class="indent">Filename</th>
 			<th class="shrink">Created By</th>
 		</tr>
@@ -10,7 +12,9 @@
 	<tbody>
 		{{#each files}}
 		<tr class="item-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}" data-extension="{{this.extension}}">
+			{{#ifCond ../user.permission '<' 2}}
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
+			{{/ifCond}}
 			<td class="description-td">
 				<a href="{{../path}}/f{{this.uri}}" {{#ifCond this.type "==" "file"}} target="_blank" {{/ifCond}}>
 					{{#ifCond this.type "==" "file"}}
@@ -34,6 +38,6 @@
 </div>
 {{else}}
 <div class="no-files">
-	<p>There are currently no files here. Click the upload button ( <i class="fa fa-upload"></i> ) above to add some.</p>
+	<p>There are currently no files here.{{#ifCond user.permission '<' 2}} Click the upload button ( <i class="fa fa-upload"></i> ) above to add some.{{/ifCond}}</p>
 </div>
 {{/if}}
