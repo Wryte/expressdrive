@@ -18,6 +18,12 @@
 	</div>
 	{{#ifCond user.permission '<=' 1}}
 	<div class="tool-container">
+		<div id="permissionsButton" class="tool-button">
+			<span class="icon fa-stack">
+				<i class="fa fa-stack-2x fa-fw fa-unlock-alt"></i>
+			</span>
+			<p>Permissions</p>
+		</div>
 		<div id="uploadButton" class="tool-button">
 			<span class="icon fa-stack">
 				<i class="fa fa-stack-2x fa-fw fa-upload"></i>

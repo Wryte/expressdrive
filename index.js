@@ -189,7 +189,8 @@ class ExpressDrive {
 		// endpoint for AJAX fileTable
 		this.app.get([config.path + "/fileTable", config.path + "/fileTable/*"],
 			(req, res) => {
-				var folderData = this.fileMap.getFolderData(req.originalUrl.substring(config.path.length + "/fileTable".length))
+				var cleanPath = req.originalUrl.substring(config.path.length + "/fileTable".length)
+				var folderData = this.fileMap.getFolderData(cleanPath)
 
 				res.send(templates.fileTable({
 					path: config.path,

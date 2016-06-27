@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
 	var shade = document.getElementById("shade")
 
+	var permissionsButton = document.getElementById("permissionsButton")
+	var permissionsPopup = document.getElementById("permissionsPopup")
+	var permissionsTableBody = document.getElementById("permissionsTableBody")
+
 	var uploadButton = document.getElementById("uploadButton")
 	var uploadPopup = document.getElementById("uploadPopup")
 	var	uploadInput = document.getElementById("uploadInput")
@@ -32,6 +36,14 @@ document.addEventListener("DOMContentLoaded", function() {
 	var closeShade
 
 	// bind buttons in tray
+	permissionsButton.onclick = function() {
+		setFolderName()
+		closeShade = generatePopupTL(permissionsPopup, shade)
+
+		var item = templateGetNode("permissionsItem", {username: "All Users", read: true}, "tbody")
+		permissionsTableBody.appendChild(item)
+	}
+
 	uploadButton.onclick = function() {
 		setFolderName()
 		closeShade = generatePopupTL(uploadPopup, shade)

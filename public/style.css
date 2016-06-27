@@ -270,7 +270,7 @@ label.button.primary {
 	padding: 0 5px 0 0;
 	border: 1px solid #ddd;
 	border-radius: 3px;
-	margin-right: 5px;
+	margin-right: 2px;
 	overflow: hidden;
 }
 .tool-button .icon {
@@ -558,7 +558,14 @@ td.description-td {
 }
 
 .popup .bad-input {
-	border-color: hsl(0,39%,58%);
+	border-color: hsl(0,39%,58%) !important;
+}
+
+.permissions-popup .body {
+	padding: 20px;
+}
+.permissions-popup .file-table {
+	margin: 0;
 }
 
 .delete-popup .body {

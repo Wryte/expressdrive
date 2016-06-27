@@ -1,0 +1,29 @@
+<div id="permissionsPopup" class="popup permissions-popup">
+	<div class="header">Edit permissions for '<span class="folder-name"></span>'</div>
+	<div class="body">
+	<table class="file-table">
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th class="shrink">Edit</th>
+				<th class="shrink">Read-only</th>
+			</tr>
+		</thead>
+		<tbody id="permissionsTableBody">
+			
+		</tbody>
+	</table>
+	</div>
+	<div class="footer">
+		<button class="primary">Save</button>
+		<button data-close-popup=true>Cancel</button>
+	</div>
+</div>
+
+<script id="permissionsItemTemplate" type="text/x-handlebars-template">
+	<tr class="permissions-item">
+		<td>\{{username}}</td>
+		<td class="text-center"><i class="fa fa-fw fa\{{#if edit}}-check\{{/if}}-circle-o\{{#if edit}} color-green\{{/if}}"></i></td>
+		<td class="text-center"><i class="fa fa-fw fa\{{#if read}}-check\{{/if}}-circle-o\{{#if read}} color-green\{{/if}}"></i></td>
+	</tr>
+</script>

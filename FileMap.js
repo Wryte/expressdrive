@@ -20,7 +20,10 @@ class FileMap {
 				this.homeFolder = {
 					type: "folder",
 					files: {},
-					diskRC: {}
+					diskRC: {},
+					permissions: {
+						_all: 1
+					}
 				}
 			}
 		})
