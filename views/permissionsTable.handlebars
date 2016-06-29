@@ -1,0 +1,18 @@
+<table class="file-table">
+	<thead>
+		<tr>
+			<th>Username</th>
+			<th class="shrink">Edit</th>
+			<th class="shrink">Read-only</th>
+		</tr>
+	</thead>
+	<tbody id="permissionsTableBody">
+		{{#each permissions}}
+		<tr class="permissions-item" data-id="{{this.id}}">
+			<td>{{this.name}}</td>
+			<td class="text-center"><i class="fa fa-fw fa{{#if this.edit}}-check{{/if}}-circle-o{{#if this.edit}} color-green{{/if}}"></i></td>
+			<td class="text-center"><i class="fa fa-fw fa{{#if this.read}}-check{{/if}}-circle-o{{#if this.read}} color-green{{/if}}"></i></td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>

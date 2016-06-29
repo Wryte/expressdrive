@@ -147,6 +147,42 @@ class ExpressDrive {
 			}
 		)
 
+		// login screen
+		this.app.get(config.path + "/login",
+			(req, res) => {
+				if (req.user) { return res.redirect(config.path) }
+
+				var message = req.session.loginMessage
+				delete req.session.loginMessage
+				res.setHeader('Cache-Control', 'no-cache, no-store')
+				res.send(templates.main({ page: "login", path: config.path, message: message }))
+			}
+		)
+
+		// login post
+		this.app.post(config.path + "/login",
+			(req, res, next) => {
+				passport.authenticate('local', (err, user, info) => {
+					if (err) { return next(err); }
+					if (!user) { return res.redirect(config.path + '/login'); }
+					req.logIn(user, (err) => {
+						if (err) { return next(err); }
+						return res.redirect(req.body.oreq == "" ? config.path : req.body.oreq);
+					});
+				})(req, res, next);
+			}
+		)
+
+		// logout
+		this.app.get(config.path + "/logout",
+			(req, res) => {
+				if (req.user) {
+					req.logout()
+				}
+				res.redirect(config.path + "/login")
+			}
+		)
+
 		// fileView page when accessing from URL
 		this.app.get([config.path, config.path + "/f", config.path + "/f/*"],
 			(req, res) => {
@@ -201,39 +237,6 @@ class ExpressDrive {
 			}
 		)
 
-		this.app.get(config.path + "/login",
-			(req, res) => {
-				if (req.user) { return res.redirect(config.path) }
-
-				var message = req.session.loginMessage
-				delete req.session.loginMessage
-				res.setHeader('Cache-Control', 'no-cache, no-store')
-				res.send(templates.main({ page: "login", path: config.path, message: message }))
-			}
-		)
-
-		this.app.post(config.path + "/login",
-			(req, res, next) => {
-				passport.authenticate('local', (err, user, info) => {
-					if (err) { return next(err); }
-					if (!user) { return res.redirect(config.path + '/login'); }
-					req.logIn(user, (err) => {
-						if (err) { return next(err); }
-						return res.redirect(req.body.oreq == "" ? config.path : req.body.oreq);
-					});
-				})(req, res, next);
-			}
-		)
-
-		this.app.get(config.path + "/logout",
-			(req, res) => {
-				if (req.user) {
-					req.logout()
-				}
-				res.redirect(config.path + "/login")
-			}
-		)
-
 		this.app.post(config.path + "/upload",
 			this.upload.single("file"),
 			(req, res) => {
@@ -278,6 +281,36 @@ class ExpressDrive {
 		this.app.get(config.path + "/getFolders",
 			(req, res) => {
 				res.send(this.fileMap.getFolders())
+			}
+		)
+
+		this.app.post(config.path + "/getPermissions",
+			(req, res) => {
+				if (req.user.permission == 0) {
+					var permissions = this.fileMap.getPermissions(req.body.path)
+					var users = basicUsers.getUsers()
+					users.unshift({ username: "All Users", id: "_all" })
+
+					var currentPermissions = []
+
+					for (var i = 0; i < users.length; i++) {
+						var user = users[i]
+						var permItem = { name: user.username, id: user.id }
+						var perm = permissions[user.id]
+
+						if (perm === 1) {
+							permItem.edit = true
+						} else if (perm === 2) {
+							permItem.read = true
+						}
+
+						currentPermissions.push(permItem)
+					}
+
+					res.send(templates.permissionsTable({permissions: currentPermissions }))
+				} else {
+					res.sendStatus(403)
+				}
 			}
 		)
 

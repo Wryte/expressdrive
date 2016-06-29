@@ -22,11 +22,25 @@ class FileMap {
 					files: {},
 					diskRC: {},
 					permissions: {
-						_all: 1
+						_all: 2
 					}
 				}
 			}
 		})
+	}
+	incRefCount(filename) {
+		var refCount = this.homeFolder.diskRC[filename]
+		if (!refCount) {
+			refCount = 0
+		}
+		refCount++
+		this.homeFolder.diskRC[filename] = refCount
+	}
+	decRefCount(filename) {
+		if (--this.homeFolder.diskRC[filename] == 0) {
+			delete this.homeFolder.diskRC[filename]
+		}
+		return this.homeFolder.diskRC[filename]
 	}
 	navigateToFile(folderObj, pathArray) {
 		if (pathArray.length == 0) {
@@ -143,19 +157,9 @@ class FileMap {
 
 		return newFilename
 	}
-	incRefCount(filename) {
-		var refCount = this.homeFolder.diskRC[filename]
-		if (!refCount) {
-			refCount = 0
-		}
-		refCount++
-		this.homeFolder.diskRC[filename] = refCount
-	}
-	decRefCount(filename) {
-		if (--this.homeFolder.diskRC[filename] == 0) {
-			delete this.homeFolder.diskRC[filename]
-		}
-		return this.homeFolder.diskRC[filename]
+	getPermissions(path) {
+		var file = this.getFileFromPath(path)
+		return file.permissions
 	}
 	addFile(file, path, user) {
 		var folder = this.getFileFromPath(path)
@@ -194,7 +198,8 @@ class FileMap {
 			filename: name,
 			created_by: user.username,
 			date_created: (new Date()).getTime(),
-			files: {}
+			files: {},
+			permissions: { _all: 2 }
 		}
 
 		this.save()

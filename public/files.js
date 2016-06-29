@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	var permissionsButton = document.getElementById("permissionsButton")
 	var permissionsPopup = document.getElementById("permissionsPopup")
-	var permissionsTableBody = document.getElementById("permissionsTableBody")
+	var permissionsPopupBody = document.getElementById("permissionsPopupBody")
 
 	var uploadButton = document.getElementById("uploadButton")
 	var uploadPopup = document.getElementById("uploadPopup")
@@ -38,10 +38,22 @@ document.addEventListener("DOMContentLoaded", function() {
 	// bind buttons in tray
 	permissionsButton.onclick = function() {
 		setFolderName()
+
+		var xhr = new XMLHttpRequest()
+
+		xhr.open("POST", __path + "/getPermissions")
+		xhr.setRequestHeader("Content-type", "application/json")
+
+		xhr.onload = function(e) {
+			if (xhr.status == 200) {
+				closeShade = generatePopupTL(permissionsPopup, shade)
+				permissionsPopupBody.innerHTML = xhr.responseText
+			}
+		}
+
+		xhr.send(JSON.stringify({ path: getCurrentPath() }))
 		closeShade = generatePopupTL(permissionsPopup, shade)
 
-		var item = templateGetNode("permissionsItem", {username: "All Users", read: true}, "tbody")
-		permissionsTableBody.appendChild(item)
 	}
 
 	uploadButton.onclick = function() {
@@ -99,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 			xhr.onload = function(e) {
 				if (xhr.status == 200) {
-					folders = xhr.response
+					var folders = xhr.response
 					folderView.setFolders(folders)
 					closeShade = generatePopupTL(moveItemsPopup, shade)
 				}
@@ -127,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			var xhr = new XMLHttpRequest()
 
 			xhr.open("POST", __path + "/createFolder")
-			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.setRequestHeader("Content-type", "application/json")
 
 			xhr.onload = function(e) {
 				if (xhr.status == 200) {

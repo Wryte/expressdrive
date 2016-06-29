@@ -562,7 +562,9 @@ td.description-td {
 }
 
 .permissions-popup .body {
+	max-height: 250px;
 	padding: 20px;
+	padding-top: 5px;
 }
 .permissions-popup .file-table {
 	margin: 0;

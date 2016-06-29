@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					usernameInputCU.value = ""
 					passwordInputCU.value = ""
 					passwordRepeatInputCU.value = ""
-					permissionSelectCU.value = "read-only"
+					permissionSelectCU.value = 1
 					reloadUserTable(updateSelection)
 				}
 			}
