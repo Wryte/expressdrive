@@ -142,13 +142,21 @@ document.addEventListener("DOMContentLoaded", function() {
 			var selected = el.querySelector(".selected")
 
 			if (selected) {
-				permItem.permission = selected.dataset.permissionLevel
+				permItem.permission = parseInt(selected.dataset.permissionLevel, 10)
 			}
 
 			permissions.push(permItem)
 		}
 
-
+		$ajax({
+			url: __path + "/setPermissions",
+			method: "POST",
+			type: "application/json",
+			data: { permissions: permissions, path: getCurrentPath() },
+			success: function(xhr) {
+				if (closeShade) { closeShade() }
+			}
+		})
 	}
 
 	// upload popup events

@@ -161,6 +161,21 @@ class FileMap {
 		var file = this.getFileFromPath(path)
 		return file.permissions
 	}
+	setPermissions(path, permissionsData) {
+		var file = this.getFileFromPath(path)
+
+		if (file && file.type == "folder") {
+			for (var i = 0; i < permissionsData.length; i++) {
+				var item = permissionsData[i]
+
+				if (item.permission === undefined) {
+					delete file.permissions[item.id]
+				} else {
+					file.permissions[item.id] = item.permission
+				}
+			}
+		}
+	}
 	addFile(file, path, user) {
 		var folder = this.getFileFromPath(path)
 		file.originalname = this.sanitizeFilename(file.originalname)

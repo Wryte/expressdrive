@@ -314,6 +314,17 @@ class ExpressDrive {
 			}
 		)
 
+		this.app.post(config.path + "/setPermissions",
+			(req, res) => {
+				if (req.user.permission == 0) {
+					this.fileMap.setPermissions(req.body.path, req.body.permissions)
+					res.sendStatus(200)
+				} else {
+					res.sendStatus(403)
+				}
+			}
+		)
+
 		// administration
 		this.app.get(config.path + "/admin",
 			(req, res) => {
