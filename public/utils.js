@@ -248,3 +248,39 @@ function reloadFileTable(callback) {
 
 	xhr.send()
 }
+
+function $ajax(obj) {
+	var xhr = new XMLHttpRequest()
+
+	if (obj.url === undefined) {
+		console.error("No url specified")
+		return
+	}
+
+	xhr.open(obj.method || "POST", obj.url)
+	if (obj.type !== undefined) {
+		xhr.setRequestHeader("Content-type", obj.type)
+	}
+	if (obj.responseType !== undefined) {
+		xhr.responseType = obj.responseType
+	}
+
+	xhr.onload = function(e) {
+		if (xhr.status == 200) {
+			if (obj.success) { obj.success(xhr) }
+			if (obj.complete) { obj.complete(xhr) }
+		} else if (xhr.status == 400) {
+			if (obj.error) { obj.error(xhr) }
+			if (obj.complete) { obj.complete(xhr) }
+		}
+	}
+
+	if (obj.data) {
+		if (obj.type == "application/json") {
+			obj.data = JSON.stringify(obj.data)
+		}
+		xhr.send(obj.data)
+	} else {
+		xhr.send()
+	}
+}

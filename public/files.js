@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	var permissionsButton = document.getElementById("permissionsButton")
 	var permissionsPopup = document.getElementById("permissionsPopup")
 	var permissionsPopupBody = document.getElementById("permissionsPopupBody")
+	var permissionsSaveButton = document.getElementById("permissionsSaveButton")
 
 	var uploadButton = document.getElementById("uploadButton")
 	var uploadPopup = document.getElementById("uploadPopup")
@@ -39,21 +40,16 @@ document.addEventListener("DOMContentLoaded", function() {
 	permissionsButton.onclick = function() {
 		setFolderName()
 
-		var xhr = new XMLHttpRequest()
-
-		xhr.open("POST", __path + "/getPermissions")
-		xhr.setRequestHeader("Content-type", "application/json")
-
-		xhr.onload = function(e) {
-			if (xhr.status == 200) {
+		$ajax({
+			url: __path + "/getPermissions",
+			method: "POST",
+			type: "application/json",
+			data: { path: getCurrentPath() },
+			success: function(xhr) {
 				closeShade = generatePopupTL(permissionsPopup, shade)
 				permissionsPopupBody.innerHTML = xhr.responseText
 			}
-		}
-
-		xhr.send(JSON.stringify({ path: getCurrentPath() }))
-		closeShade = generatePopupTL(permissionsPopup, shade)
-
+		})
 	}
 
 	uploadButton.onclick = function() {
@@ -104,21 +100,55 @@ document.addEventListener("DOMContentLoaded", function() {
 		if (selected.length > 0) {
 			moveItemsHeaderSpan.innerText = selected.length > 1 ? selected.length + " Items" : "'" + selected[0].dataset.filename + "'"
 
-			var xhr = new XMLHttpRequest()
-
-			xhr.open("GET", __path + "/getFolders")
-			xhr.responseType = "json"
-
-			xhr.onload = function(e) {
-				if (xhr.status == 200) {
+			$ajax({
+				url: __path + "/getFolders",
+				method: "GET",
+				responseType: "json",
+				success: function(xhr) {
 					var folders = xhr.response
 					folderView.setFolders(folders)
 					closeShade = generatePopupTL(moveItemsPopup, shade)
 				}
+			})
+		}
+	}
+
+	// permissions events
+	bindOn("click", "#permissionsTableBody .select-td", function(e) {
+		var parentTR = this.parentElement
+		var options = parentTR.querySelectorAll(".select-td")
+
+		for (var i = 0; i < options.length; i++) {
+			var option = options[i]
+			var icon = option.querySelector("i")
+
+			if (hasClass(option, "selected")) {
+				removeClass(option, "selected")
+				selectTable.selectOffTL(icon)
+			} else if (option == this) {
+				addClass(option, "selected")
+				selectTable.selectOnTL(icon)
+			}
+		}
+	})
+
+	permissionsSaveButton.onclick = function() {
+		var permissionsElements = document.querySelectorAll(".permissions-item")
+		var permissions = []
+		
+		for (var i = 0; i < permissionsElements.length; i++) {
+			var el = permissionsElements[i]
+			var permItem = { id: el.dataset.id }
+			var selected = el.querySelector(".selected")
+
+			if (selected) {
+				permItem.permission = selected.dataset.permissionLevel
 			}
 
-			xhr.send()
+			permissions.push(permItem)
 		}
+
+
 	}
 
 	// upload popup events
@@ -136,20 +166,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		var folderName = folderNameInput.value
 
 		if (folderName !== "") {
-			var xhr = new XMLHttpRequest()
-
-			xhr.open("POST", __path + "/createFolder")
-			xhr.setRequestHeader("Content-type", "application/json")
-
-			xhr.onload = function(e) {
-				if (xhr.status == 200) {
+			$ajax({
+				url: __path + "/createFolder",
+				method: "POST",
+				type: "application/json",
+				data: { name: folderName, target: getCurrentPath() },
+				success: function(xhr) {
 					setTimeout(function() { folderNameInput.value = "New Folder" }, 1000)
 					if (closeShade) { closeShade() }
 					reloadFileTable(updateSelection)
 				}
-			}
-
-			xhr.send(JSON.stringify({ name: folderName, target: getCurrentPath() }))
+			})
 		}
 	}
 
@@ -162,28 +189,25 @@ document.addEventListener("DOMContentLoaded", function() {
 		var filename = filenameInput.value
 
 		if (filename !== "") {
-			var xhr = new XMLHttpRequest()
-
-			xhr.open("POST", __path + "/editFile")
-			xhr.setRequestHeader("Content-type", "application/json");
-
-			xhr.onload = function(e) {
-				if (xhr.status == 200) {
-					if (closeShade) { closeShade() }
-					reloadFileTable(updateSelection)
-				}
-			}
-
 			var itemData = selected[0].dataset
 
 			if (itemData.extension) {
 				filename = filename + "." + itemData.extension
 			}
 
-			xhr.send(JSON.stringify({
-				name: filename,
-				filePath: itemData.uri
-			}))
+			$ajax({
+				url: __path + "/editFile",
+				method: "POST",
+				type: "application/json",
+				data: {
+					name: filename,
+					filePath: itemData.uri
+				},
+				success: function(xhr) {
+					if (closeShade) { closeShade() }
+					reloadFileTable(updateSelection)
+				}
+			})
 		}
 	}
 
@@ -197,23 +221,20 @@ document.addEventListener("DOMContentLoaded", function() {
 				files.push(selected[i].dataset.uri)
 			}
 
-			var xhr = new XMLHttpRequest()
-
-			xhr.open("POST", __path + "/moveFiles")
-			xhr.setRequestHeader("Content-type", "application/json");
-
-			xhr.onload = function(e) {
-				if (xhr.status == 200) {
+			$ajax({
+				url: __path + "/moveFiles",
+				method: "POST",
+				type: "application/json",
+				data: {
+					files: files,
+					target: folderView.selectedFolder.path,
+					keepOriginal: keepOriginalInput.checked
+				},
+				success: function(xhr) {
 					if (closeShade) { closeShade() }
 					reloadFileTable(updateSelection)
 				}
-			}
-
-			xhr.send(JSON.stringify({
-				files: files,
-				target: folderView.selectedFolder.path,
-				keepOriginal: keepOriginalInput.checked
-			}))
+			})
 		}
 	}
 
@@ -228,19 +249,16 @@ document.addEventListener("DOMContentLoaded", function() {
 			deleteFiles.push(selected[i].dataset.uri)
 		}
 
-		var xhr = new XMLHttpRequest()
-
-		xhr.open("POST", __path + "/deleteFiles")
-		xhr.setRequestHeader("Content-type", "application/json");
-
-		xhr.onload = function(e) {
-			if (xhr.status == 200) {
+		$ajax({
+			url: __path + "/deleteFiles",
+			method: "POST",
+			type: "application/json",
+			data: { files: deleteFiles },
+			success: function(xhr) {
 				if (closeShade) { closeShade() }
 				reloadFileTable(updateSelection)
 			}
-		}
-
-		xhr.send(JSON.stringify({ files: deleteFiles }))
+		})
 	}
 
 	// file selection
