@@ -42,24 +42,45 @@ class FileMap {
 		}
 		return this.homeFolder.diskRC[filename]
 	}
-	navigateToFile(folderObj, pathArray) {
-		if (pathArray.length == 0) {
-			return folderObj
+	getUserPermissions(permissions, userId) {
+		var permission = permissions[userId]
+
+		if (permission === undefined) {
+			permission = permissions["_all"]
 		}
 
-		var nextFile = folderObj.files[pathArray.shift()]
-
-		if (nextFile) {
-			if (nextFile.type == "folder") {
-				return this.navigateToFile(nextFile, pathArray)
-			} else {
-				return nextFile
+		return permission
+	}
+	navigateToFile(folderObj, pathArray, userId, currentPermissions) {
+		if (pathArray.length == 0) {
+			return {
+				file: folderObj,
+				permission: this.getUserPermissions(currentPermissions, userId)
 			}
 		}
 
-		return
+		var nextFile = folderObj.files[pathArray.shift()]
+		
+		if (nextFile) {
+			if (nextFile.permissions) {
+				currentPermissions = nextFile.permissions
+			}
+
+			var permission = this.getUserPermissions(currentPermissions, userId)
+			if (!permission && userId !== 0) {
+				return {}
+			}
+
+			if (nextFile.type == "folder") {
+				return this.navigateToFile(nextFile, pathArray, userId, currentPermissions)
+			} else {
+				return { file: nextFile, permission }
+			}
+		}
+
+		return {}
 	}
-	getFileFromPath(path) {
+	getFileFromPath(path, userId) {
 		var pathSplit = decodeURI(path).split("/")
 		var first = pathSplit[0]
 		while (first === "") {
@@ -67,13 +88,16 @@ class FileMap {
 			first = pathSplit[0]
 		}
 
-		return this.navigateToFile(this.homeFolder, pathSplit)
+		return this.navigateToFile(this.homeFolder, pathSplit, userId, this.homeFolder.permissions)
 	}
-	getFolderData(folder, path) {
-		if (typeof folder == "string") {
-			path = folder
-			folder = this.getFileFromPath(path)
+	getFolderData(folderData, userId, path) {
+		if (typeof folderData == "string") {
+			path = folderData
+			folderData = this.getFileFromPath(path, userId)
 		}
+
+		var folder = folderData.file
+		var folderPermission = folderData.permission
 		
 		var files = []
 
@@ -82,15 +106,20 @@ class FileMap {
 
 		for (var k in folder.files) {
 			var file = folder.files[k]
-			files.push({
-				filename: file.filename,
-				type: file.type,
-				created_by: file.created_by,
-				time: "created on " + moment(file.date_created).format("MMMM D, YYYY"),
-				uri: path + "/" + encodeURI(file.filename),
-				extension: file.extension
-			})
-			file.type == "file" ? fileCount++ : folderCount++
+			
+			if (!file.permissions || this.getUserPermissions(file.permissions, userId) !== undefined || userId == 0) {
+				var fileObj = {
+					filename: file.filename,
+					type: file.type,
+					created_by: file.created_by,
+					time: "created on " + moment(file.date_created).format("MMMM D, YYYY"),
+					uri: path + "/" + encodeURI(file.filename),
+					extension: file.extension
+				}
+				files.push(fileObj)
+				
+				file.type == "file" ? fileCount++ : folderCount++
+			}
 		}
 
 		// sort on type then alphabetical
@@ -142,7 +171,7 @@ class FileMap {
 		}
 		breadcrumbs[breadcrumbs.length - 1].last = true
 
-		return { files, stats, breadcrumbs }
+		return { files, stats, breadcrumbs, folderPermission }
 	}
 	getNewFileName(folder, filename, number) {
 		var fileSplit = filename.split(".")
@@ -157,27 +186,37 @@ class FileMap {
 
 		return newFilename
 	}
-	getPermissions(path) {
-		var file = this.getFileFromPath(path)
+	getPermissions(path, userId) {
+		var file = this.getFileFromPath(path, userId).file
 		return file.permissions
 	}
-	setPermissions(path, permissionsData) {
-		var file = this.getFileFromPath(path)
+	setPermissions(path, permissionsData, inheritPermissions, userId) {
+		var file = this.getFileFromPath(path, userId).file
 
 		if (file && file.type == "folder") {
-			for (var i = 0; i < permissionsData.length; i++) {
-				var item = permissionsData[i]
+			if (inheritPermissions) {
+				delete file.permissions
+			} else {
+				if (file.permissions === undefined) {
+					file.permissions = {}
+				}
 
-				if (item.permission === undefined) {
-					delete file.permissions[item.id]
-				} else {
-					file.permissions[item.id] = item.permission
+				for (var i = 0; i < permissionsData.length; i++) {
+					var item = permissionsData[i]
+
+					if (item.permission === undefined) {
+						delete file.permissions[item.id]
+					} else {
+						file.permissions[item.id] = item.permission
+					}
 				}
 			}
 		}
+
+		this.save()
 	}
 	addFile(file, path, user) {
-		var folder = this.getFileFromPath(path)
+		var folder = this.getFileFromPath(path, user.id)
 		file.originalname = this.sanitizeFilename(file.originalname)
 
 		if (file.originalname in folder.files) {
@@ -201,7 +240,7 @@ class FileMap {
 		this.save()
 	}
 	createFolder(name, path, user) {
-		var folder = this.getFileFromPath(path)
+		var folder = this.getFileFromPath(path, user.id)
 		name = this.sanitizeFilename(name)
 
 		if (name in folder.files) {
@@ -213,13 +252,12 @@ class FileMap {
 			filename: name,
 			created_by: user.username,
 			date_created: (new Date()).getTime(),
-			files: {},
-			permissions: { _all: 2 }
+			files: {}
 		}
 
 		this.save()
 	}
-	deleteFiles(filePaths) {
+	deleteFiles(filePaths, userId) {
 		var deletedFiles = []
 
 		for (var i = 0; i < filePaths.length; i++) {
@@ -227,7 +265,7 @@ class FileMap {
 			var pathSplit = path.split("/")
 			var filename = pathSplit[pathSplit.length - 1]
 			var folderPath = path.substring(0, path.length - filename.length - 1)
-			var folder = this.getFileFromPath(folderPath)
+			var folder = this.getFileFromPath(folderPath, userId)
 
 			if (folder && filename in folder.files) {
 				var file = folder.files[filename]
@@ -269,14 +307,14 @@ class FileMap {
 	sanitizeFilename(name) {
 		return name.replace(/[^.a-zA-Z0-9 _-]/g, "")
 	}
-	editFile(name, path) {
+	editFile(name, path, userId) {
 		name = this.sanitizeFilename(name)
 		path = decodeURI(path)
 		var pathSplit = path.split("/")
 		var oldFilename = pathSplit[pathSplit.length - 1]
 		var folderPath = path.substring(0, path.length - oldFilename.length - 1)
-		var folder = this.getFileFromPath(folderPath)
-		var file = this.getFileFromPath(path)
+		var folder = this.getFileFromPath(folderPath, userId)
+		var file = this.getFileFromPath(path, userId)
 
 		if (folder && file) {
 			delete folder.files[oldFilename]
@@ -291,8 +329,8 @@ class FileMap {
 
 		this.save()
 	}
-	moveFiles(files, target, keepOriginal) {
-		var targetFolder = this.getFileFromPath(target)
+	moveFiles(files, target, keepOriginal, userId) {
+		var targetFolder = this.getFileFromPath(target, userId)
 
 		if (targetFolder) {
 			for (var i = 0; i < files.length; i++) {
@@ -300,8 +338,8 @@ class FileMap {
 				var pathSplit = path.split("/")
 				var filename = pathSplit[pathSplit.length - 1]
 				var folderPath = path.substring(0, path.length - filename.length - 1)
-				var folder = this.getFileFromPath(folderPath)
-				var file = this.getFileFromPath(path)
+				var folder = this.getFileFromPath(folderPath, userId)
+				var file = this.getFileFromPath(path, userId)
 
 				// prevent putting a folder inside itself
 				if (!keepOriginal && file.type == "folder" && (target.startsWith(path + "/") || target == path)) {

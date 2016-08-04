@@ -16,47 +16,49 @@
 			{{/if}}
 		{{/each}}
 	</div>
-	{{#ifCond user.permission '<=' 1}}
 	<div class="tool-container">
-		<div id="permissionsButton" class="tool-button">
-			<span class="icon fa-stack">
-				<i class="fa fa-stack-2x fa-fw fa-unlock-alt"></i>
-			</span>
-			<p>Permissions</p>
-		</div>
-		<div id="uploadButton" class="tool-button">
-			<span class="icon fa-stack">
-				<i class="fa fa-stack-2x fa-fw fa-upload"></i>
-			</span>
-			<p>Upload</p>
-		</div>
-		<div id="createFolderPopupButton" class="tool-button">
-			<span class="icon fa-stack">
-				<i class="fa fa-stack-2x fa-fw fa-folder"></i>
-			</span>
-			<p>Create Folder</p>
-		</div>
-		<div id="editPopupButton" class="tool-button disabled">
-			<span class="icon fa-stack">
-				<i class="fa fa-stack-2x fa-fw fa-pencil"></i>
-			</span>
-			<p>Edit</p>
-		</div>
-		<div id="moveItemsPopupButton" class="tool-button disabled">
-			<span class="icon fa-stack">
-				<i class="fa fa-stack-2x fa-fw fa-file-o"></i>
-				<i class="fa fa-stack-1x fa-fw fa-arrow-circle-right"></i>
-			</span>
-			<p>Move</p>
-		</div>
-		<div id="deletePopupButton" class="tool-button disabled">
-			<span class="icon fa-stack">
-				<i class="fa fa-stack-2x fa-fw fa-trash-o"></i>
-			</span>
-			<p>Delete</p>
-		</div>
+		{{#ifCond user.permission '==' 0}}
+			<div id="permissionsButton" class="tool-button">
+				<span class="icon fa-stack">
+					<i class="fa fa-stack-2x fa-fw fa-unlock-alt"></i>
+				</span>
+				<p>Permissions</p>
+			</div>
+		{{/ifCond}}
+		{{#ifCond folderPermission '<' 2}}
+			<div id="uploadButton" class="tool-button">
+				<span class="icon fa-stack">
+					<i class="fa fa-stack-2x fa-fw fa-upload"></i>
+				</span>
+				<p>Upload</p>
+			</div>
+			<div id="createFolderPopupButton" class="tool-button">
+				<span class="icon fa-stack">
+					<i class="fa fa-stack-2x fa-fw fa-folder"></i>
+				</span>
+				<p>Create Folder</p>
+			</div>
+			<div id="editPopupButton" class="tool-button disabled">
+				<span class="icon fa-stack">
+					<i class="fa fa-stack-2x fa-fw fa-pencil"></i>
+				</span>
+				<p>Edit</p>
+			</div>
+			<div id="moveItemsPopupButton" class="tool-button disabled">
+				<span class="icon fa-stack">
+					<i class="fa fa-stack-2x fa-fw fa-file-o"></i>
+					<i class="fa fa-stack-1x fa-fw fa-arrow-circle-right"></i>
+				</span>
+				<p>Move</p>
+			</div>
+			<div id="deletePopupButton" class="tool-button disabled">
+				<span class="icon fa-stack">
+					<i class="fa fa-stack-2x fa-fw fa-trash-o"></i>
+				</span>
+				<p>Delete</p>
+			</div>
+		{{/ifCond}}
 	</div>
-	{{/ifCond}}
 </div>
 <div class="break"></div>
 <div id="fileTableContainer">

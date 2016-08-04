@@ -26,6 +26,7 @@ html, body {
 .color-red { color: hsl(0,39%,58%); }
 .color-green { color: #75B37A; }
 .nowrap { white-space: nowrap; }
+.hidden { display: none !important; }
 
 a {
 	text-decoration: none;
@@ -540,7 +541,8 @@ td.description-td {
 	margin-bottom: 5px;
 }
 
-.popup .body input,
+.popup .body input[type="text"],
+.popup .body input[type="password"],
 .popup .body select {
 	box-sizing: border-box;
 	width: 100%;
@@ -642,4 +644,31 @@ td.description-td {
 }
 .folder-item .filename:hover {
 	text-decoration: underline;
+}
+
+.folder-permission-block {
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.body .folder-permission-block label {
+	display: inline;
+}
+
+.permission-table-container {
+	position: relative;
+
+}
+
+.permission-shade {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: hsla(0,0%,97%,0.8);
+	border-radius: 3px;
 }

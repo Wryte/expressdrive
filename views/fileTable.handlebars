@@ -2,7 +2,7 @@
 <table id="fileTable" class="file-table">
 	<thead>
 		<tr>
-			{{#ifCond user.permission '<' 2}}
+			{{#ifCond folderPermission '<' 2}}
 			<th class="shrink text-center select-all-td"><i class="fa fa-circle-o"></i></th>
 			{{/ifCond}}
 			<th class="indent">Filename</th>
@@ -12,7 +12,7 @@
 	<tbody>
 		{{#each files}}
 		<tr class="item-element" data-uri="{{this.uri}}" data-filename="{{this.filename}}" data-type="{{this.type}}" data-extension="{{this.extension}}">
-			{{#ifCond ../user.permission '<' 2}}
+			{{#ifCond ../folderPermission '<' 2}}
 			<td class="select-td"><i class="fa fa-circle-o fa-fw"></i></td>
 			{{/ifCond}}
 			<td class="description-td">

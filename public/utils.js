@@ -75,7 +75,7 @@ if (!Element.prototype.matches)
 	if (ep.mozMatchesSelector) { ep.matches = ep.mozMatchesSelector; }
 }
 
-var __binds = { click: [] }
+var __binds = { click: [], change: [] }
 function bindOn(action, selector, func) {
 	__binds[action].push({
 		selector: selector,
@@ -95,6 +95,22 @@ function unbindOn(action, func) {
 document.addEventListener("click", function(e) {
 	for (var i = 0; i < __binds.click.length; i++) {
 		var item = __binds.click[i]
+		var found
+		var el = e.target
+
+		while (el && !(found = el.matches(item.selector))) {
+			el = el.parentElement
+		}
+
+		if (found) {
+			item.func.call(el, e)
+		}
+	}
+})
+
+document.addEventListener("change", function(e) {
+	for (var i = 0; i < __binds.change.length; i++) {
+		var item = __binds.change[i]
 		var found
 		var el = e.target
 

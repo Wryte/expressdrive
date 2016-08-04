@@ -1,32 +1,32 @@
 document.addEventListener("DOMContentLoaded", function() {
 	var shade = document.getElementById("shade")
 
-	var permissionsButton = document.getElementById("permissionsButton")
+	var permissionsButton = document.getElementById("permissionsButton") || {}
 	var permissionsPopup = document.getElementById("permissionsPopup")
 	var permissionsPopupBody = document.getElementById("permissionsPopupBody")
 	var permissionsSaveButton = document.getElementById("permissionsSaveButton")
 
-	var uploadButton = document.getElementById("uploadButton")
+	var uploadButton = document.getElementById("uploadButton") || {}
 	var uploadPopup = document.getElementById("uploadPopup")
 	var	uploadInput = document.getElementById("uploadInput")
 	var	uploadItemsContainer = document.getElementById("uploadItemsContainer")
 
-	var createFolderPopupButton = document.getElementById("createFolderPopupButton")
+	var createFolderPopupButton = document.getElementById("createFolderPopupButton") || {}
 	var createFolderPopup = document.getElementById("createFolderPopup")
 	var folderNameInput = document.getElementById("folderNameInput")
 	var createFolderButton = document.getElementById("createFolderButton")
 
-	var editPopupButton = document.getElementById("editPopupButton")
+	var editPopupButton = document.getElementById("editPopupButton") || {}
 	var editPopup = document.getElementById("editPopup")
 	var filenameInput = document.getElementById("filenameInput")
 	var editExtensionSpan = document.getElementById("editExtensionSpan")
 	var editButton = document.getElementById("editButton")
 
-	var deletePopupButton = document.getElementById("deletePopupButton")
+	var deletePopupButton = document.getElementById("deletePopupButton") || {}
 	var deletePopup = document.getElementById("deletePopup")
 	var deleteButton = document.getElementById("deleteButton")
 
-	var moveItemsPopupButton = document.getElementById("moveItemsPopupButton")
+	var moveItemsPopupButton = document.getElementById("moveItemsPopupButton") || {}
 	var moveItemsPopup = document.getElementById("moveItemsPopup")
 	var moveItemsHeaderSpan = document.getElementById("moveItemsHeaderSpan")
 	var keepOriginalInput = document.getElementById("keepOriginalInput")
@@ -132,7 +132,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 	})
 
+	bindOn("change", "#inheritPermissions", function() {
+		var permissionShade = document.getElementById("permissionShade")
+		if (this.checked) {
+			removeClass(permissionShade, "hidden")
+		} else {
+			addClass(permissionShade, "hidden")
+		}
+	})
+
 	permissionsSaveButton.onclick = function() {
+		var inheritPermissions = document.getElementById("inheritPermissions") || {}
 		var permissionsElements = document.querySelectorAll(".permissions-item")
 		var permissions = []
 		
@@ -152,7 +162,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			url: __path + "/setPermissions",
 			method: "POST",
 			type: "application/json",
-			data: { permissions: permissions, path: getCurrentPath() },
+			data: {
+				permissions: permissions,
+				path: getCurrentPath(),
+				inheritPermissions: inheritPermissions.checked
+			},
 			success: function(xhr) {
 				if (closeShade) { closeShade() }
 			}

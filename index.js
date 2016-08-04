@@ -95,7 +95,9 @@ class ExpressDrive {
 			createUser: true,
 			editUser: true,
 			deleteUser: true,
-			userTable: true
+			userTable: true,
+			getPermissions: true,
+			setPermissions: true
 		}
 		this.fileMap = new FileMap({ saveDestination: appRoot + "/expressdrive/files.json" })
 
@@ -155,7 +157,7 @@ class ExpressDrive {
 				var message = req.session.loginMessage
 				delete req.session.loginMessage
 				res.setHeader('Cache-Control', 'no-cache, no-store')
-				res.send(templates.main({ page: "login", path: config.path, message: message }))
+				res.send(templates.main({ page: "login", path: config.path, message }))
 			}
 		)
 
@@ -190,7 +192,8 @@ class ExpressDrive {
 				if (req.originalUrl == config.path) { req.originalUrl = config.path + "/f" }
 
 				var cleanPath = req.originalUrl.substring(config.path.length + "/f".length)
-				var file = this.fileMap.getFileFromPath(cleanPath)
+				var fileData = this.fileMap.getFileFromPath(cleanPath, req.user.id)
+				var file = fileData.file
 
 				if (file == undefined) {
 					return res.send(templates.main({
@@ -203,7 +206,12 @@ class ExpressDrive {
 				}
 
 				if (file.type == "folder") {
-					var folderData = this.fileMap.getFolderData(file, cleanPath)
+					var folderData = this.fileMap.getFolderData(fileData, req.user.id, cleanPath)
+					
+					var folderPermission = fileData.permission
+					if (req.user.id === 0) {
+						folderPermission = 0
+					}
 
 					res.setHeader('Cache-Control', 'no-cache, no-store')
 					res.setHeader('Content-Type', 'text/html')
@@ -212,6 +220,7 @@ class ExpressDrive {
 						view: "fileView",
 						path: config.path,
 						user: req.user,
+						folderPermission,
 						files: folderData.files,
 						stats: folderData.stats,
 						breadcrumbs: folderData.breadcrumbs
@@ -226,13 +235,19 @@ class ExpressDrive {
 		this.app.get([config.path + "/fileTable", config.path + "/fileTable/*"],
 			(req, res) => {
 				var cleanPath = req.originalUrl.substring(config.path.length + "/fileTable".length)
-				var folderData = this.fileMap.getFolderData(cleanPath)
+				var folderData = this.fileMap.getFolderData(cleanPath, req.user.id)
+
+				var folderPermission = fileData.permission
+				if (req.user.id === 0) {
+					folderPermission = 0
+				}
 
 				res.send(templates.fileTable({
 					path: config.path,
 					user: req.user,
 					files: folderData.files,
-					stats: folderData.stats
+					stats: folderData.stats,
+					folderPermission
 				}))
 			}
 		)
@@ -254,21 +269,21 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/editFile",
 			(req, res) => {
-				this.fileMap.editFile(req.body.name, req.body.filePath)
+				this.fileMap.editFile(req.body.name, req.body.filePath, req.user.id)
 				res.sendStatus(200)
 			}
 		)
 
 		this.app.post(config.path + "/moveFiles",
 			(req, res) => {
-				this.fileMap.moveFiles(req.body.files, req.body.target, req.body.keepOriginal)
+				this.fileMap.moveFiles(req.body.files, req.body.target, req.body.keepOriginal, req.user.id)
 				res.sendStatus(200)
 			}
 		)
 
 		this.app.post(config.path + "/deleteFiles",
 			(req, res) => {
-				var deletedFiles = this.fileMap.deleteFiles(req.body.files)
+				var deletedFiles = this.fileMap.deleteFiles(req.body.files, req.user.id)
 
 				for (var i = 0; i < deletedFiles.length; i++) {
 					fs.unlink(path.join(appRoot.path, 'expressdrive', 'uploads', deletedFiles[i].nameOnDisk))
@@ -287,12 +302,18 @@ class ExpressDrive {
 		this.app.post(config.path + "/getPermissions",
 			(req, res) => {
 				if (req.user.permission == 0) {
-					var permissions = this.fileMap.getPermissions(req.body.path)
+					var permissions = this.fileMap.getPermissions(req.body.path, req.user.id)
+					var inheritPermissions
 					var users = basicUsers.getUsers()
 					users.unshift({ username: "All Users", id: "_all" })
 
-					var currentPermissions = []
+					if (permissions == undefined) {
+						inheritPermissions = true
+						permissions = {}
+					}
 
+					var currentPermissions = []
+					
 					for (var i = 0; i < users.length; i++) {
 						var user = users[i]
 						var permItem = { name: user.username, id: user.id }
@@ -307,7 +328,11 @@ class ExpressDrive {
 						currentPermissions.push(permItem)
 					}
 
-					res.send(templates.permissionsTable({permissions: currentPermissions }))
+					res.send(templates.permissionsTable({
+						inheritPermissions,
+						permissions: currentPermissions,
+						showInherit: req.body.path !== "" // check if it's the home folder
+					}))
 				} else {
 					res.sendStatus(403)
 				}
@@ -317,7 +342,7 @@ class ExpressDrive {
 		this.app.post(config.path + "/setPermissions",
 			(req, res) => {
 				if (req.user.permission == 0) {
-					this.fileMap.setPermissions(req.body.path, req.body.permissions)
+					this.fileMap.setPermissions(req.body.path, req.body.permissions, req.body.inheritPermissions, req.user.id)
 					res.sendStatus(200)
 				} else {
 					res.sendStatus(403)
