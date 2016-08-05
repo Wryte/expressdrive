@@ -192,7 +192,7 @@ class ExpressDrive {
 				if (req.originalUrl == config.path) { req.originalUrl = config.path + "/f" }
 
 				var cleanPath = req.originalUrl.substring(config.path.length + "/f".length)
-				var fileData = this.fileMap.getFileFromPath(cleanPath, req.user.id)
+				var fileData = this.fileMap.getFileFromPath(cleanPath, req.user)
 				var file = fileData.file
 
 				if (file == undefined) {
@@ -206,10 +206,10 @@ class ExpressDrive {
 				}
 
 				if (file.type == "folder") {
-					var folderData = this.fileMap.getFolderData(fileData, req.user.id, cleanPath)
+					var folderData = this.fileMap.getFolderData(fileData, req.user, cleanPath)
 					
 					var folderPermission = fileData.permission
-					if (req.user.id === 0) {
+					if (req.user.permission === 0) {
 						folderPermission = 0
 					}
 
@@ -235,10 +235,10 @@ class ExpressDrive {
 		this.app.get([config.path + "/fileTable", config.path + "/fileTable/*"],
 			(req, res) => {
 				var cleanPath = req.originalUrl.substring(config.path.length + "/fileTable".length)
-				var folderData = this.fileMap.getFolderData(cleanPath, req.user.id)
+				var folderData = this.fileMap.getFolderData(cleanPath, req.user)
 
-				var folderPermission = fileData.permission
-				if (req.user.id === 0) {
+				var folderPermission = folderData.folderPermission
+				if (req.user.permission === 0) {
 					folderPermission = 0
 				}
 
@@ -269,21 +269,21 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/editFile",
 			(req, res) => {
-				this.fileMap.editFile(req.body.name, req.body.filePath, req.user.id)
+				this.fileMap.editFile(req.body.name, req.body.filePath, req.user)
 				res.sendStatus(200)
 			}
 		)
 
 		this.app.post(config.path + "/moveFiles",
 			(req, res) => {
-				this.fileMap.moveFiles(req.body.files, req.body.target, req.body.keepOriginal, req.user.id)
+				this.fileMap.moveFiles(req.body.files, req.body.target, req.body.keepOriginal, req.user)
 				res.sendStatus(200)
 			}
 		)
 
 		this.app.post(config.path + "/deleteFiles",
 			(req, res) => {
-				var deletedFiles = this.fileMap.deleteFiles(req.body.files, req.user.id)
+				var deletedFiles = this.fileMap.deleteFiles(req.body.files, req.user)
 
 				for (var i = 0; i < deletedFiles.length; i++) {
 					fs.unlink(path.join(appRoot.path, 'expressdrive', 'uploads', deletedFiles[i].nameOnDisk))
@@ -301,8 +301,8 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/getPermissions",
 			(req, res) => {
-				if (req.user.permission == 0) {
-					var permissions = this.fileMap.getPermissions(req.body.path, req.user.id)
+				if (req.user.permission === 0) {
+					var permissions = this.fileMap.getPermissions(req.body.path, req.user)
 					var inheritPermissions
 					var users = basicUsers.getUsers()
 					users.unshift({ username: "All Users", id: "_all" })
@@ -341,8 +341,8 @@ class ExpressDrive {
 
 		this.app.post(config.path + "/setPermissions",
 			(req, res) => {
-				if (req.user.permission == 0) {
-					this.fileMap.setPermissions(req.body.path, req.body.permissions, req.body.inheritPermissions, req.user.id)
+				if (req.user.permission === 0) {
+					this.fileMap.setPermissions(req.body.path, req.body.permissions, req.body.inheritPermissions, req.user)
 					res.sendStatus(200)
 				} else {
 					res.sendStatus(403)

@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		var username = usernameInputEU.value
 		var password = passwordInputEU.value
 		var passwordRepeat = passwordRepeatInputEU.value
-		var permission = permissionSelectEU.value
+		var permission = parseInt(permissionSelectEU.value, 10)
 		var clean = true
 
 		removeClass([usernameInputEU, passwordInputEU, passwordRepeatInputEU], "bad-input")
