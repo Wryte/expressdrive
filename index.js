@@ -37,13 +37,17 @@ for (var k in defaultConfig) {
 	}
 }
 
-var secret = "M^Secr3tIsB3tter"
+var branding = {
+	titlePrefix: config.titlePrefix,
+	companyName: config.companyName,
+	logo: config.logo
+}
 
 var basicUsers = new BasicUsers({
 	saveDestination: appRoot + "/expressdrive/users.json",
 	adminUsername: config.adminUsername,
 	adminPassword: config.adminPassword,
-	secret
+	secret: config.secret
 })
 
 
@@ -121,7 +125,7 @@ class ExpressDrive {
 		this.app.use(bodyParser.urlencoded({ extended: false }))
 		this.app.use(bodyParser.json())
 		this.app.use(session({
-			secret,
+			secret: config.secret,
 			resave: false,
 			saveUninitialized: true,
 			httpOnly: true,
@@ -157,7 +161,7 @@ class ExpressDrive {
 				var message = req.session.loginMessage
 				delete req.session.loginMessage
 				res.setHeader('Cache-Control', 'no-cache, no-store')
-				res.send(templates.main({ page: "login", path: config.path, message }))
+				res.send(templates.main({ branding, page: "login", path: config.path, message }))
 			}
 		)
 
@@ -197,6 +201,7 @@ class ExpressDrive {
 
 				if (file == undefined) {
 					return res.send(templates.main({
+						branding,
 						page: "loggedIn",
 						view: "fileView",
 						path: config.path,
@@ -216,6 +221,7 @@ class ExpressDrive {
 					res.setHeader('Cache-Control', 'no-cache, no-store')
 					res.setHeader('Content-Type', 'text/html')
 					res.send(templates.main({
+						branding,
 						page: "loggedIn",
 						view: "fileView",
 						path: config.path,
@@ -295,7 +301,7 @@ class ExpressDrive {
 
 		this.app.get(config.path + "/getFolders",
 			(req, res) => {
-				res.send(this.fileMap.getFolders())
+				res.send(this.fileMap.getFolders(req.user))
 			}
 		)
 
@@ -354,6 +360,7 @@ class ExpressDrive {
 		this.app.get(config.path + "/admin",
 			(req, res) => {
 				res.send(templates.main({
+					branding,
 					page: "loggedIn",
 					view: "adminView",
 					user: req.user,

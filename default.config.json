@@ -4,5 +4,6 @@
 	"adminPassword": "test",
 	"titlePrefix": "ExpressDrive",
 	"companyName": "ExpressDrive",
+	"secret": "M^Secr3tIsB3tter",
 	"logo": "http://www.google.com/drive/images/drive/logo-drive.png"
 }

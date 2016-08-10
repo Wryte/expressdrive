@@ -365,9 +365,15 @@ class FileMap {
 			this.save()
 		}
 	}
-	getFolders(current, folder, path) {
+	getFolders(user, currentPermissions, current, folder, path) {
 		if (folder == undefined) { folder = this.homeFolder }
-		if (current == undefined) { current = { folders:[], filename:"Home", path: "/" } }
+		if (currentPermissions == undefined) { currentPermissions = folder.permissions }
+		if (current == undefined) {
+			current = { folders:[], filename:"Home", path: "/" }
+			if (this.getUserPermissions(currentPermissions, user) > 1) {
+				current.disabled = true
+			}
+		}
 		if (path == undefined) { path = "" }
 
 		for (var k in folder.files) {
@@ -379,8 +385,12 @@ class FileMap {
 					filename: file.filename,
 					path: innerPath
 				}
-				this.getFolders(innerFolder, file, innerPath)
-				current.folders.push(innerFolder)
+				var folderPermissions = file.permissions || currentPermissions
+				this.getFolders(user, folderPermissions, innerFolder, file, innerPath)
+
+				if (this.getUserPermissions(folderPermissions, user) < 2 || user.permission == 0) {
+					current.folders.push(innerFolder)
+				}
 			}
 		}
 

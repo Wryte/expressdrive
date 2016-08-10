@@ -20,6 +20,7 @@ FolderView.prototype.renderFolder = function(folder, depth) {
 		filename: folder.filename,
 		selected: folder.selected ? "selected" : "",
 		arrow: folder.expanded ? "down" : "right",
+		disabled: folder.disabled ? "disabled" : "",
 		margin: 1.5 * depth
 	})
 	item.querySelector(".expand-toggle").onclick = function() {
@@ -27,10 +28,12 @@ FolderView.prototype.renderFolder = function(folder, depth) {
 		self.render()
 	}
 	item.querySelector(".filename").onclick = function() {
-		self.clearSelected()
-		folder.selected = true
-		self.selectedFolder = folder
-		self.render()
+		if (!folder.disabled) {
+			self.clearSelected()
+			folder.selected = true
+			self.selectedFolder = folder
+			self.render()
+		}
 	}
 	this.el.appendChild(item)
 
