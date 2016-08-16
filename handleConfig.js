@@ -51,12 +51,12 @@ function dynamicSass(scssEntry, variables, handleSuccess, handleError) {
 	});
 }
 
-dynamicSass(appRoot + "/preprocessed/style.scss", {
+dynamicSass(__dirname + "/preprocessed/style.scss", {
 	primaryColor: "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+config.primaryColor.l+"%)",
 	primaryColorBright: "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+(config.primaryColor.l + 30)+"%)",
 	primaryColorDark: "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+(config.primaryColor.l - 5)+"%)"
 }, function(data) {
-	fs.writeFile(appRoot + "/public/processed/output.css", data)
+	fs.writeFile(__dirname + "/public/processed/output.css", data)
 }, function(e) {
 	console.log("sass error - ", e)
 });
