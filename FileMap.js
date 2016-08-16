@@ -370,7 +370,7 @@ class FileMap {
 		if (currentPermissions == undefined) { currentPermissions = folder.permissions }
 		if (current == undefined) {
 			current = { folders:[], filename:"Home", path: "/" }
-			if (this.getUserPermissions(currentPermissions, user) > 1) {
+			if (this.getUserPermissions(currentPermissions, user) > 1 && user.permission !== 0) {
 				current.disabled = true
 			}
 		}

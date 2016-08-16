@@ -99,14 +99,14 @@ label.button {
 button.primary,
 a.button.primary,
 label.button.primary {
-	background-color: hsl(38,29%,55%);
+	background-color: $primaryColor;
 }
 
 .message-center {
 	padding: 10px;
 	margin: 10px 0;
-	background-color: hsl(38,29%,80%);
-	color: hsl(38,29%,50%);
+	background-color: $primaryColorBright;
+	color: $primaryColorDark;
 	font-size: 0.8em;
 	border-radius: 2px;
 	text-align: center;
@@ -197,7 +197,7 @@ label.button.primary {
 }
 
 .top-bar .sign-out {
-	color: hsl(38,29%,55%);
+	color: $primaryColor;
 	padding: 4px;
 	border-radius: 3px;
 	transition: background-color 0.5s;
@@ -246,7 +246,7 @@ label.button.primary {
 .breadcrumbs {
 	font-size: 0.8em;
 	line-height: 1.5em;
-	color: hsl(38,29%,55%);
+	color: $primaryColor;
 }
 
 .breadcrumbs a {
@@ -287,7 +287,7 @@ label.button.primary {
 
 .tool-button p {
 	font-size: 0.75em;
-	color: hsl(38,29%,55%);
+	color: $primaryColor;
 	transition: color 0.5s;
 }
 
@@ -358,7 +358,7 @@ td.description-td {
 .description-td .fa {
 	font-size: 1.5em;
 	margin-right: 10px;
-	color: hsl(38,29%,55%);
+	color: $primaryColor;
 }
 
 .description-td .sub {
@@ -475,7 +475,7 @@ td.description-td {
 }
 
 .upload-item .main > i {
-	color: hsl(38,29%,55%);
+	color: $primaryColor;
 	font-size: 1.3em;
 	margin-right: 10px;
 }
@@ -497,7 +497,7 @@ td.description-td {
 .upload-item .progress .bar {
 	height: 100%;
 	width: 0%;
-	background-color: hsl(38,29%,55%);
+	background-color: $primaryColor;
 }
 
 .no-files {
@@ -618,11 +618,11 @@ td.description-td {
 	border-radius: 2px;
 }
 .folder-item.selected {
-	background-color: hsl(38,39%,88%);
+	background-color: $primaryColorBright;
 }
 
 .folder-item .fa-folder-o {
-	color: hsl(38,39%,58%);
+	color: $primaryColor;
 	margin-right: 5px;
 }
 

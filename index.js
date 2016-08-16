@@ -6,9 +6,6 @@ var bodyParser = require("body-parser")
 var fs = require("fs")
 var path = require("path")
 var Handlebars = require("handlebars")
-var templateLoader = require("./templateLoader")
-var loadTemplates = templateLoader.loadTemplates
-var templates = templateLoader.templates
 var passport = require("passport")
 var LocalStrategy = require("passport-local").Strategy
 var appRoot = require("app-root-path")
@@ -16,32 +13,19 @@ var Sha256 = require("./public/Sha256")
 var FileMap = require("./FileMap")
 var BasicUsers = require("./BasicUsers")
 var multer = require("multer")
-var mkdirp = require("mkdirp")
 
 // ensure some folders
+var mkdirp = require("mkdirp")
 mkdirp(appRoot + "/expressdrive/uploads")
+mkdirp(appRoot + "/public/processed")
 
-// load up config
-var defaultConfig = require("./default.config")
-var config = {}
+var templateLoader = require("./templateLoader")
+var loadTemplates = templateLoader.loadTemplates
+var templates = templateLoader.templates
 
-try {
-	config = require(appRoot + "/expressdrive.config")
-} catch (ex) {
-    console.warn("expressdrive - no user config")
-}
-
-for (var k in defaultConfig) {
-	if (config[k] === undefined) {
-		config[k] = defaultConfig[k]
-	}
-}
-
-var branding = {
-	titlePrefix: config.titlePrefix,
-	companyName: config.companyName,
-	logo: config.logo
-}
+var handleConfig = require("./handleConfig")
+var config = handleConfig.config
+var branding = handleConfig.branding
 
 var basicUsers = new BasicUsers({
 	saveDestination: appRoot + "/expressdrive/users.json",
@@ -49,7 +33,6 @@ var basicUsers = new BasicUsers({
 	adminPassword: config.adminPassword,
 	secret: config.secret
 })
-
 
 // setup passport
 passport.use(new LocalStrategy(
