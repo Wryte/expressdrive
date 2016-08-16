@@ -17,7 +17,7 @@ var multer = require("multer")
 // ensure some folders
 var mkdirp = require("mkdirp")
 mkdirp(appRoot + "/expressdrive/uploads")
-mkdirp(appRoot + "/public/processed")
+mkdirp(__dirname + "/public/processed")
 
 var templateLoader = require("./templateLoader")
 var loadTemplates = templateLoader.loadTemplates

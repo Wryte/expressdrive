@@ -1,6 +1,6 @@
 {
   "name": "expressdrive",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A cloud drive plugin for express",
   "main": "index.js",
   "dependencies": {
