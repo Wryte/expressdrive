@@ -1,6 +1,7 @@
 var sass = require('node-sass')
 var _ = require("underscore")
 var fs = require("fs")
+var appRoot = require("app-root-path")
 
 // load up config
 var defaultConfig = require("./default.config")
@@ -50,12 +51,12 @@ function dynamicSass(scssEntry, variables, handleSuccess, handleError) {
 	});
 }
 
-dynamicSass('preprocessed/style.scss', {
-	'primaryColor': "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+config.primaryColor.l+"%)",
-	'primaryColorBright': "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+(config.primaryColor.l + 30)+"%)",
-	'primaryColorDark': "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+(config.primaryColor.l - 5)+"%)"
+dynamicSass(appRoot + "/preprocessed/style.scss", {
+	primaryColor: "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+config.primaryColor.l+"%)",
+	primaryColorBright: "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+(config.primaryColor.l + 30)+"%)",
+	primaryColorDark: "hsl("+config.primaryColor.h+","+config.primaryColor.s+"%,"+(config.primaryColor.l - 5)+"%)"
 }, function(data) {
-	fs.writeFile("public/processed/output.css", data)
+	fs.writeFile(appRoot + "/public/processed/output.css", data)
 }, function(e) {
 	console.log("sass error - ", e)
 });
