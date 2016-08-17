@@ -1,6 +1,6 @@
 "use strict"
 
-var Sha256 = require("./public/Sha256")
+var Sha256 = require("./public/sha256")
 var fs = require("fs")
 
 class BasicUsers {
