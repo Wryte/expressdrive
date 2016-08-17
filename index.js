@@ -132,6 +132,8 @@ class ExpressDrive {
 						}
 						next()
 					})
+				} else {
+					next()
 				}
 			}
 		)
