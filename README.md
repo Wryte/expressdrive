@@ -24,10 +24,9 @@ Configuration for ExpressDrive is in a file called `expressdrive.config.json` in
    "path": "/files",
    "adminUserName": "admin",
    "adminPassword": "test",
-   // the secret is used to generate file names and password hashing
-   // on the server. change it for every instance you have of ExpressDrive
    "secret": "somethingsecret", 
    "logo": "/path/to/logo.png",
-   "primaryColor": { "h": (0-360), "s": (0-100), "l": (0-100) }
+   "primaryColor": { "h": "(0-360)", "s": "(0-100)", "l": "(0-100)" }
 }
 ```
+The `secret` is used to generate file names and password hashing on the server. Change it for every instance you have of ExpressDrive
